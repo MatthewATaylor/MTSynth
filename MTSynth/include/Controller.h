@@ -1,8 +1,7 @@
 #pragma once
 
-#include "VST3_SDK/base/source/fstreamer.h"
-#include "VST3_SDK/pluginterfaces/base/funknown.h"
-#include "VST3_SDK/public.sdk/source/vst/vsteditcontroller.h"
+#include "base/source/fstreamer.h"
+#include "public.sdk/source/vst/vsteditcontroller.h"
 
 namespace Steinberg {
 	namespace mts {

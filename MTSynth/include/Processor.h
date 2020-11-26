@@ -1,9 +1,8 @@
 #pragma once
 
-#include "VST3_SDK/base/source/fstreamer.h"
-#include "VST3_SDK/pluginterfaces/base/funknown.h"
-#include "VST3_SDK/pluginterfaces/vst/ivstparameterchanges.h"
-#include "VST3_SDK/public.sdk/source/vst/vstaudioeffect.h"
+#include "base/source/fstreamer.h"
+#include "pluginterfaces/vst/ivstparameterchanges.h"
+#include "public.sdk/source/vst/vstaudioeffect.h"
 
 #include "Controller.h"
 

@@ -35,10 +35,9 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-#include "VST3_SDK/pluginterfaces/base/ftypes.h"
-
 #include <windows.h>
 
+#include "pluginterfaces/base/ftypes.h"
 
 #if defined(_MSC_VER) && defined(DEVELOPMENT)
 	#include <crtdbg.h>

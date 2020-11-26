@@ -1,5 +1,4 @@
-#include "VST3_SDK/public.sdk/source/main/pluginfactory.h"
-#include "VST3_SDK/pluginterfaces/vst/ivstcomponent.h"
+#include "public.sdk/source/main/pluginfactory.h"
 
 #include "meta.h"
 #include "Controller.h"

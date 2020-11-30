@@ -12,7 +12,7 @@ namespace Steinberg {
 			tresult result = EditController::initialize(context);
 			if (result == kResultTrue) {
 				parameters.addParameter(
-					STR16("Test"), nullptr, 1, 0,
+					STR16("Test"), nullptr, 0, 0,
 					Vst::ParameterInfo::kCanAutomate,
 					testParamID
 				);

@@ -97,9 +97,9 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID /*lpvReserved*/) {
 
 		// Get path of component
 		if (GetModuleFileName(ghInst, gPath, MAX_PATH) > 0) {
-			Steinberg::tchar* bkslash = tstrrchr(gPath, TEXT('\\'));
-			if (bkslash) {
-				gPath[bkslash - gPath + 1] = 0;
+			Steinberg::tchar* backslash = tstrrchr(gPath, TEXT('\\'));
+			if (backslash) {
+				gPath[backslash - gPath + 1] = 0;
 			}
 		}
 	}

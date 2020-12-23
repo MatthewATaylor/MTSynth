@@ -11,14 +11,12 @@
 #include "pluginterfaces/vst/ivstnoteexpression.h"
 #include "pluginterfaces/vst/ivstphysicalui.h"
 
+#include "Params.h"
+
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-			class Controller : public EditController,
-				public INoteExpressionController,
-				public IMidiMapping,
-				public INoteExpressionPhysicalUIMapping {
-
+			class Controller : public EditController {
 			public:
 				static const FUID ID;
 
@@ -28,38 +26,6 @@ namespace Steinberg {
 				tresult PLUGIN_API initialize(FUnknown *context) SMTG_OVERRIDE;
 				tresult PLUGIN_API terminate() SMTG_OVERRIDE;
 				tresult PLUGIN_API setComponentState(IBStream *state) SMTG_OVERRIDE;
-
-				// INoteExpressionController
-				int32 PLUGIN_API getNoteExpressionCount(int32 busIndex, int16 channel) SMTG_OVERRIDE;
-				tresult PLUGIN_API getNoteExpressionInfo(
-					int32 busIndex, int16 channel, int32 noteExpressionIndex, NoteExpressionTypeInfo &info
-				) SMTG_OVERRIDE;
-				tresult PLUGIN_API getNoteExpressionStringByValue(
-					int32 busIndex, int16 channel, NoteExpressionTypeID id,
-					NoteExpressionValue valueNormalized, String128 string
-				) SMTG_OVERRIDE;
-				tresult PLUGIN_API getNoteExpressionValueByString(
-					int32 busIndex, int16 channel, NoteExpressionTypeID id, const TChar *string,
-					NoteExpressionValue &valueNormalized
-				) SMTG_OVERRIDE;
-
-				// IMidiMapping
-				tresult PLUGIN_API getMidiControllerAssignment(
-					int32 busIndex, int16 channel, CtrlNumber midiControllerNumber, ParamID &id
-				) SMTG_OVERRIDE;
-
-				// INoteExpressionPhysicalUIMapping
-				tresult PLUGIN_API getPhysicalUIMapping(
-					int32 busIndex, int16 channel, PhysicalUIMapList &list
-				) SMTG_OVERRIDE;
-
-				OBJ_METHODS(Controller, EditController)
-				DEFINE_INTERFACES
-					DEF_INTERFACE(INoteExpressionController)
-					DEF_INTERFACE(IMidiMapping)
-					DEF_INTERFACE(INoteExpressionPhysicalUIMapping)
-				END_DEFINE_INTERFACES(EditController)
-				REFCOUNT_METHODS(EditController)
 			};
 		}
 	}

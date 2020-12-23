@@ -1,6 +1,8 @@
 #include "Filter.h"
 
 unsigned int Filter::get(unsigned int input, double rc, Type type) {
+	return 0;
+	/*
 	auto currentTime = std::chrono::steady_clock::now();
 	double elapsedTime_s =
 		std::chrono::duration_cast<std::chrono::duration<double, std::chrono::seconds>>(
@@ -38,4 +40,5 @@ unsigned int Filter::get(unsigned int input, double rc, Type type) {
 	}
 
 	throw std::exception("Unimplemented filter type");
+	*/
 }

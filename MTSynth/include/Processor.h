@@ -1,17 +1,22 @@
 #pragma once
 
-#include "base/source/fstreamer.h"
-#include "pluginterfaces/vst/ivstparameterchanges.h"
-#include "public.sdk/source/vst/vstaudioeffect.h"
+#include <algorithm>
 
+#include "base/source/fstreamer.h"
+#include "public.sdk/source/vst/vstaudioeffect.h"
+#include "pluginterfaces/vst/ivstparameterchanges.h"
+#include "pluginterfaces/vst/ivstevents.h"
+
+#include "VoiceProcessor.h"
 #include "Controller.h"
+#include "Params.h"
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
 			class Processor : public AudioEffect {
 			protected:
-				Vst::ParamValue testParam;
+				VoiceProcessor voiceProcessor;
 
 			public:
 				static const FUID ID;
@@ -22,16 +27,16 @@ namespace Steinberg {
 
 				tresult PLUGIN_API initialize(FUnknown *context) SMTG_OVERRIDE;
 				tresult PLUGIN_API setBusArrangements(
-					Vst::SpeakerArrangement *inputs, int32 numInputs,
-					Vst::SpeakerArrangement *outputs, int32 numOutputs
+					SpeakerArrangement *inputs, int32 numInputs,
+					SpeakerArrangement *outputs, int32 numOutputs
 				) SMTG_OVERRIDE;
-
-				tresult PLUGIN_API setupProcessing(Vst::ProcessSetup &setup) SMTG_OVERRIDE;
-				tresult PLUGIN_API setActive(TBool state) SMTG_OVERRIDE;
-				tresult PLUGIN_API process(Vst::ProcessData &data) SMTG_OVERRIDE;
 
 				tresult PLUGIN_API setState(IBStream *state) SMTG_OVERRIDE;
 				tresult PLUGIN_API getState(IBStream *state) SMTG_OVERRIDE;
+
+				tresult PLUGIN_API canProcessSampleSize(int32 symbolicSampleSize) SMTG_OVERRIDE;
+				tresult PLUGIN_API setActive(TBool state) SMTG_OVERRIDE;
+				tresult PLUGIN_API process(ProcessData &data) SMTG_OVERRIDE;
 			};
 		}
 	}

@@ -9,7 +9,7 @@ private:
 	unsigned int prevHighPassOutput = 0;
 	unsigned int prevLowPassOutput = 0;
 
-	std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
+	//std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
 
 public:
 	enum class Type {

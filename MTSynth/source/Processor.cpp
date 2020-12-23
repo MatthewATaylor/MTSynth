@@ -15,99 +15,100 @@ namespace Steinberg {
 
 			tresult PLUGIN_API Processor::initialize(FUnknown *context) {
 				tresult result = AudioEffect::initialize(context);
-				if (result != kResultTrue) {
-					return kResultFalse;
+				if (result == kResultTrue) {
+					addAudioOutput(STR16("Audio Output"), SpeakerArr::kStereo);
+					addEventInput(STR16("Event Input"), 1);
 				}
-
-				addAudioInput(STR16("Audio Input"), SpeakerArr::kStereo);
-				addAudioOutput(STR16("Audio Output"), SpeakerArr::kStereo);
-
-				return kResultTrue;
+				return result;
 			}
-
 			tresult PLUGIN_API Processor::setBusArrangements(
 				SpeakerArrangement *inputs, int32 numInputs,
-				SpeakerArrangement* outputs, int32 numOutputs
+				SpeakerArrangement *outputs, int32 numOutputs
 			) {
-				// One input bus, one output bus, and matching number of channels
-				if (numInputs == 1 && numOutputs == 1 && inputs[0] == outputs[0]) {
+				// Support one stereo output
+				if (numInputs == 0 && numOutputs == 1 && outputs[0] == SpeakerArr::kStereo) {
 					return AudioEffect::setBusArrangements(inputs, numInputs, outputs, numOutputs);
 				}
-
 				return kResultFalse;
 			}
 
-			tresult PLUGIN_API Processor::setupProcessing(ProcessSetup &setup) {
-				// Data acquired from setup: sampleRate, processMode, max samples per audio block
-				return AudioEffect::setupProcessing(setup);
+			tresult PLUGIN_API Processor::setState(IBStream *state) {
+				IBStreamer streamer(state, kLittleEndian);
+				if (!streamer.readDouble(Params::volume)) {
+					return kResultFalse;
+				}
+				return kResultTrue;
+			}
+			tresult PLUGIN_API Processor::getState(IBStream *state) {
+				IBStreamer streamer(state, kLittleEndian);
+				streamer.writeDouble(Params::volume);
+				return kResultTrue;
 			}
 
+			tresult PLUGIN_API Processor::canProcessSampleSize(int32 symbolicSampleSize) {
+				// Support 32-bit and 64-bit precision
+				if (symbolicSampleSize == kSample32 || symbolicSampleSize == kSample64) {
+					return kResultTrue;
+				}
+				return kResultFalse;
+			}
 			tresult PLUGIN_API Processor::setActive(TBool state) {
 				if (state) {
-					// Allocate memory
-				}
-				else {
-					// Free memory
+					//Reset all voices when setting active
+					for (uint8 i = 0; i < VoiceProcessor::MAX_VOICES; ++i) {
+						voiceProcessor.getVoice(i)->reset();
+					}
 				}
 				return AudioEffect::setActive(state);
 			}
-
-			tresult PLUGIN_API Processor::process(ProcessData &data) {
+			tresult PLUGIN_API Processor::process(ProcessData& data) {
 				if (data.inputParameterChanges) {
-					int32 numParamsChanged = data.inputParameterChanges->getParameterCount();
-					for (int32 i = 0; i < numParamsChanged; ++i) {
-						IParamValueQueue *paramQueue =
-							data.inputParameterChanges->getParameterData(i);
-
-						if (paramQueue) {
-							int32 numPoints = paramQueue->getPointCount();
+					int32 count = data.inputParameterChanges->getParameterCount();
+					for (int32 i = 0; i < count; ++i) {
+						IParamValueQueue *queue = data.inputParameterChanges->getParameterData(i);
+						if (queue) {
 							int32 sampleOffset;
 							ParamValue value;
-
-							switch (paramQueue->getParameterId()) {
-							case Controller::testParamID:
-								if (paramQueue->getPoint(numPoints - 1, sampleOffset, value) == kResultTrue) {
-									testParam = value;
+							ParamID paramID = queue->getParameterId();
+							if (queue->getPoint(queue->getPointCount() - 1, sampleOffset, value) == kResultTrue) {
+								switch (paramID) {
+								case static_cast<int>(Params::IDs::VOLUME):
+									Params::volume = value;
+									break;
 								}
-								break;
 							}
 						}
 					}
 				}
 
-				if (data.numInputs == 0 || data.numOutputs == 0) {
-					return kResultOk;
+				tresult result;
+
+				if (data.numOutputs < 1) {
+					result = kResultTrue;
+				}
+				else {
+					result = voiceProcessor.process(data);
 				}
 
-				if (data.numSamples > 0) {
-					// Process audio
+				if (result == kResultTrue) {
+					if (data.outputParameterChanges) {
+						int32 index;
+						IParamValueQueue* queue = data.outputParameterChanges->addParameterData(
+							static_cast<ParamID>(Params::IDs::ACTIVE_VOICES), index
+						);
+						if (queue) {
+							queue->addPoint(
+								0,
+								static_cast<double>(voiceProcessor.getNumActiveVoices()) / VoiceProcessor::MAX_VOICES,
+								index
+							);
+						}
+					}
+					if (voiceProcessor.getNumActiveVoices() == 0 && data.numOutputs > 0) {
+						data.outputs[0].silenceFlags = 0x11; // Left and right channel are silent
+					}
 				}
-
-				return kResultOk;
-			}
-
-			tresult PLUGIN_API Processor::setState(IBStream *state) {
-				// Reload parameters when preset/project is loaded
-
-				if (!state) {
-					return kResultFalse;
-				}
-
-				IBStreamer streamer(state, kLittleEndian);
-				float testValue = 0.0f;
-				if (!streamer.readFloat(testValue)) {
-					return kResultFalse;
-				}
-				testParam = testValue;
-
-				return kResultOk;
-			}
-
-			tresult PLUGIN_API Processor::getState(IBStream *state) {
-				// Save parameters
-				IBStreamer streamer(state, kLittleEndian);
-				streamer.writeFloat(static_cast<float>(testParam));
-				return kResultOk;
+				return result;
 			}
 		}
 	}

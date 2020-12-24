@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <string>
 
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
 #include "pluginterfaces/vst/ivstevents.h"
@@ -13,7 +14,7 @@ namespace Steinberg {
 		namespace mts {
 			class VoiceProcessor {
 			public:
-				static const uint8 MAX_VOICES = 64;
+				static const uint8 MAX_VOICES = 1;
 
 			private:
 				static const uint8 CHUNK_SIZE = 32;

@@ -23,7 +23,7 @@ namespace Steinberg {
 
 					parameters.addParameter(
 						new RangeParameter(
-							USTRING("Active Voices"), static_cast<ParamID>(Params::IDs::VOLUME),
+							USTRING("Active Voices"), static_cast<ParamID>(Params::IDs::ACTIVE_VOICES),
 							nullptr, 0, 64, 0, 64, ParameterInfo::kIsReadOnly
 						)
 					);

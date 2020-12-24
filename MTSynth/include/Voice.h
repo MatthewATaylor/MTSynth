@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
 
@@ -13,7 +14,6 @@ namespace Steinberg {
 			class Voice {
 			private:
 				static const double PI;
-				static Frequencies frequencies;
 
 				const double SAMPLE_RATE = 44100.0;
 
@@ -25,6 +25,9 @@ namespace Steinberg {
 
 				ParamValue noteOnVelocity = 0.0;
 				ParamValue noteOffVelocity = 0.0;
+				ParamValue currentVolume = 0.0;
+
+				static Frequencies *getFrequencies();
 
 			public:
 				void noteOn(int32 noteID, int16 pitch, ParamValue velocity, int32 sampleOffset);

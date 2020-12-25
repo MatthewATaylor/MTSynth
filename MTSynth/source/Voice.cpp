@@ -12,13 +12,11 @@ namespace Steinberg {
 				this->tuning = tuning;
 				this->noteOnVelocity = velocity;
 				this->noteOnSampleOffset = sampleOffset;
-				this->noteOnSampleOffset++;
 			}
 			
 			void Voice::noteOff(float velocity, int32 sampleOffset) {
 				this->noteOffVelocity = velocity;
 				this->noteOffSampleOffset = sampleOffset;
-				this->noteOffSampleOffset++;
 			}
 			
 			bool Voice::process(float *outputBuffers[2], int32 numSamples) {
@@ -26,9 +24,6 @@ namespace Steinberg {
 				double adjustedFreq = FrequencyTable::get()[pitch] * PI * 2 / SAMPLE_RATE;
 
 				for (int32 i = 0; i < numSamples; ++i) {
-					this->noteOnSampleOffset--;
-					this->noteOffSampleOffset--;
-
 					if (this->noteOnSampleOffset <= 0) {
 						if (this->noteOffSampleOffset == 0) {
 							// Release
@@ -43,6 +38,9 @@ namespace Steinberg {
 
 						++sampleIndex;
 					}
+
+					--this->noteOnSampleOffset;
+					--this->noteOffSampleOffset;
 				}
 
 				return true;

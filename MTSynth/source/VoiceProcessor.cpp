@@ -3,8 +3,8 @@
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-			Voice* VoiceProcessor::getVoice(int32 noteId) {
-				Voice* firstFreeVoice = 0;
+			Voice *VoiceProcessor::getVoice(int32 noteId) {
+				Voice *firstFreeVoice = 0;
 				if (noteId != -1)
 				{
 					for (int32 i = 0; i < MAX_VOICES; i++)
@@ -37,8 +37,6 @@ namespace Steinberg {
 			}
 
 			tresult VoiceProcessor::process(ProcessData &data) {
-				const int32 kBlockSize = VOICEPROCESSOR_BLOCKSIZE;
-
 				int32 numSamples = data.numSamples;
 				int32 samplesProcessed = 0;
 				int32 i;
@@ -61,13 +59,12 @@ namespace Steinberg {
 				for (i = 0; i < 2; i++)
 				{
 					buffers[i] = (float*)data.outputs[0].channelBuffers32[i];
-					if (mClearOutputNeeded)
-						memset(buffers[i], 0, data.numSamples * sizeof(float));
+					memset(buffers[i], 0, data.numSamples * sizeof(float));
 				}
 
 				while (numSamples > 0)
 				{
-					int32 samplesToProcess = std::min<int32>(kBlockSize, numSamples);
+					int32 samplesToProcess = std::min<int32>(CHUNK_SIZE, numSamples);
 					while (eventPtr != nullptr)
 					{
 						// if the event is not in the current processing block then adapt offset for next block
@@ -87,8 +84,8 @@ namespace Steinberg {
 							Voice* voice = getVoice(e.noteOn.noteId);
 							if (voice)
 							{
-								voice->noteOn(e.noteOn.pitch, e.noteOn.velocity, e.noteOn.tuning, e.sampleOffset, e.noteOn.noteId);
-								this->activeVoices++;
+								voice->noteOn(e.noteOn.noteId, e.noteOn.pitch, e.noteOn.tuning, e.noteOn.velocity, e.sampleOffset);
+								this->numActiveVoices++;
 								//data.outputEvents->addEvent (e);
 							}
 							break;
@@ -142,7 +139,7 @@ namespace Steinberg {
 							if (!voices[i].process(buffers, samplesToProcess))
 							{
 								voices[i].reset();
-								this->activeVoices--;
+								this->numActiveVoices--;
 							}
 						}
 					}
@@ -156,6 +153,10 @@ namespace Steinberg {
 				} // end while (numSamples > 0)
 
 				return kResultTrue;
+			}
+
+			int32 VoiceProcessor::getNumActiveVoices() const {
+				return numActiveVoices;
 			}
 		}
 	}

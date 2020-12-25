@@ -127,11 +127,11 @@ namespace Steinberg {
 						if (queue)
 						{
 							queue->addPoint(
-								0, (ParamValue)voiceProcessor.getActiveVoices() / (ParamValue)VoiceProcessor::MAX_VOICES,
+								0, (ParamValue)voiceProcessor.getNumActiveVoices() / (ParamValue)VoiceProcessor::MAX_VOICES,
 								index);
 						}
 					}
-					if (voiceProcessor.getActiveVoices() == 0 && data.numOutputs > 0)
+					if (voiceProcessor.getNumActiveVoices() == 0 && data.numOutputs > 0)
 					{
 						data.outputs[0].silenceFlags = 0x11; // left and right channel are silent
 					}

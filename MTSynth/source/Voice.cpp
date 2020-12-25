@@ -12,11 +12,13 @@ namespace Steinberg {
 				this->tuning = tuning;
 				this->noteOnVelocity = velocity;
 				this->noteOnSampleOffset = sampleOffset;
+				this->noteOnSampleOffset++;
 			}
 			
 			void Voice::noteOff(float velocity, int32 sampleOffset) {
 				this->noteOffVelocity = velocity;
 				this->noteOffSampleOffset = sampleOffset;
+				this->noteOffSampleOffset++;
 			}
 			
 			bool Voice::process(float *outputBuffers[2], int32 numSamples) {

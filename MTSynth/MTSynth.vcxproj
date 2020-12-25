@@ -152,9 +152,9 @@
     <ClInclude Include="include\Filter.h" />
     <ClInclude Include="include\Frequencies.h" />
     <ClInclude Include="include\meta.h" />
-    <ClInclude Include="include\Params.h" />
     <ClInclude Include="include\Processor.h" />
     <ClInclude Include="include\Voice.h" />
+    <ClInclude Include="include\VoiceBase.h" />
     <ClInclude Include="include\VoiceProcessor.h" />
   </ItemGroup>
   <ItemGroup>
@@ -163,10 +163,8 @@
     <ClCompile Include="source\factory.cpp" />
     <ClCompile Include="source\Filter.cpp" />
     <ClCompile Include="source\Frequencies.cpp" />
-    <ClCompile Include="source\Params.cpp" />
     <ClCompile Include="source\Processor.cpp" />
     <ClCompile Include="source\Voice.cpp" />
-    <ClCompile Include="source\VoiceProcessor.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

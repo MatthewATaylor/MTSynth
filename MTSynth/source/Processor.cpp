@@ -20,20 +20,6 @@ namespace Steinberg {
 				memset(&paramState, 0, sizeof(paramState));
 
 				paramState.masterVolume = 0.5;
-				paramState.masterTuning = 0;
-				paramState.velToLevel = 1.;
-
-				paramState.noiseVolume = 0.1;
-				paramState.sinusVolume = 1.;
-				paramState.triangleVolume = 1.;
-				paramState.releaseTime = 0.;
-				paramState.sinusDetune = 0;
-				paramState.triangleSlop = 0.5;
-				paramState.filterFreq = 1.;
-				paramState.filterQ = 0.;
-				paramState.filterType = 0;
-				paramState.freqModDepth = 1.;
-				paramState.bypassSNA = 0;
 			}
 
 			//-----------------------------------------------------------------------------
@@ -143,85 +129,6 @@ namespace Steinberg {
 								case kParamMasterVolume:
 								{
 									paramState.masterVolume = value;
-									break;
-								}
-								case kParamMasterTuning:
-								{
-									paramState.masterTuning = 2 * (value - 0.5);
-									break;
-								}
-								case kParamVelToLevel:
-								{
-									paramState.velToLevel = value;
-									break;
-								}
-								case kParamFilterFreqModDepth:
-								{
-									paramState.freqModDepth = 2 * (value - 0.5);
-									break;
-								}
-
-								case kParamNoiseVolume:
-								{
-									paramState.noiseVolume = value;
-									break;
-								}
-								case kParamSinusVolume:
-								{
-									paramState.sinusVolume = value;
-									break;
-								}
-								case kParamTriangleVolume:
-								{
-									paramState.triangleVolume = value;
-									break;
-								}
-								case kParamSquareVolume:
-								{
-									paramState.squareVolume = value;
-									break;
-								}
-								case kParamReleaseTime:
-								{
-									paramState.releaseTime = value;
-									break;
-								}
-								case kParamSinusDetune:
-								{
-									paramState.sinusDetune = 2 * (value - 0.5);
-									break;
-								}
-
-								case kParamTriangleSlop:
-								{
-									paramState.triangleSlop = value;
-									break;
-								}
-								case kParamFilterType:
-								{
-									paramState.filterType = std::min<int8>(
-										(int8)(NUM_FILTER_TYPE * value), NUM_FILTER_TYPE - 1);
-									break;
-								}
-								case kParamFilterFreq:
-								{
-									paramState.filterFreq = value;
-									break;
-								}
-								case kParamFilterQ:
-								{
-									paramState.filterQ = value;
-									break;
-								}
-								case kParamBypassSNA:
-								{
-									paramState.bypassSNA = (value >= 0.5) ? 1 : 0;
-									break;
-								}
-								case kParamTuningRange:
-								{
-									paramState.tuningRange = std::min<int8>(
-										(int8)(NUM_TUNING_RANGE * value), NUM_TUNING_RANGE - 1);
 									break;
 								}
 								}

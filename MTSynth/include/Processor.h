@@ -1,12 +1,14 @@
 #pragma once
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
+
+#include "ParamState.h"
 #include "Voice.h"
+#include "VoiceProcessor.h"
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-			class VoiceProcessor;
 
 			//-----------------------------------------------------------------------------
 			/** Example Note Expression Audio Processor
@@ -33,8 +35,7 @@ namespace Steinberg {
 
 				static FUID cid;
 			protected:
-				VoiceProcessor* voiceProcessor;
-				GlobalParameterState paramState;
+				VoiceProcessor voiceProcessor;
 			};
 
 		}

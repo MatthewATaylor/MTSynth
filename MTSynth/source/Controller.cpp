@@ -21,15 +21,15 @@ namespace Steinberg {
 					// Init parameters
 					Parameter* param;
 
-					param = new RangeParameter(USTRING("Master Volume"), kParamMasterVolume, USTRING("%"), 0, 100, 80);
+					param = new RangeParameter(USTRING("Master Volume"), ParamState::VOLUME_ID, USTRING("%"), 0, 100, 80);
 					param->setPrecision(1);
 					parameters.addParameter(param);
 
-					parameters.addParameter(new RangeParameter(USTRING("Active Voices"), kParamActiveVoices, nullptr, 0, MAX_VOICES, 0, MAX_VOICES, ParameterInfo::kIsReadOnly));
+					parameters.addParameter(new RangeParameter(USTRING("Active Voices"), ParamState::ACTIVE_VOICES_ID, nullptr, 0, VoiceProcessor::MAX_VOICES, 0, VoiceProcessor::MAX_VOICES, ParameterInfo::kIsReadOnly));
 
 					// Init Default MIDI-CC Map
-					std::for_each(midiCCMapping.begin(), midiCCMapping.end(), [](ParamID& pid) { pid = InvalidParamID; });
-					midiCCMapping[ControllerNumbers::kCtrlVolume] = kParamMasterVolume;
+					std::for_each(midiCCMapping.begin(), midiCCMapping.end(), [](ParamID& pid) { pid = INVALID_PARAM_ID; });
+					midiCCMapping[ControllerNumbers::kCtrlVolume] = ParamState::VOLUME_ID;
 				}
 				return kResultTrue;
 			}
@@ -37,18 +37,16 @@ namespace Steinberg {
 			//-----------------------------------------------------------------------------
 			tresult PLUGIN_API Controller::terminate()
 			{
-				noteExpressionTypes.removeAll();
 				return EditController::terminate();
 			}
 
 			//-----------------------------------------------------------------------------
 			tresult PLUGIN_API Controller::setComponentState(IBStream* state)
 			{
-				GlobalParameterState gps;
-				tresult result = gps.setState(state);
-				if (result == kResultTrue)
-				{
-					setParamNormalized(kParamMasterVolume, gps.masterVolume);
+				ParamState paramState;
+				tresult result = paramState.setState(state);
+				if (result == kResultTrue) {
+					setParamNormalized(ParamState::VOLUME_ID, paramState.volume);
 				}
 				return result;
 			}
@@ -60,7 +58,7 @@ namespace Steinberg {
 			{
 				if (busIndex == 0 && channel == 0 && midiControllerNumber < kCountCtrlNumber)
 				{
-					if (midiCCMapping[midiControllerNumber] != InvalidParamID)
+					if (midiCCMapping[midiControllerNumber] != INVALID_PARAM_ID)
 					{
 						id = midiCCMapping[midiControllerNumber];
 						return kResultTrue;

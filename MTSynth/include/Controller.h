@@ -1,15 +1,19 @@
 #pragma once
 
+#include <array>
+#include <limits>
+
+#include "base/source/fstreamer.h"
 #include "public.sdk/source/vst/vsteditcontroller.h"
 #include "public.sdk/source/vst/vstnoteexpressiontypes.h"
 #include "pluginterfaces/vst/ivstmidicontrollers.h"
 #include "pluginterfaces/vst/ivstmidilearn.h"
 #include "pluginterfaces/vst/ivstnoteexpression.h"
 #include "pluginterfaces/vst/ivstphysicalui.h"
-#include <array>
-#include <limits>
 
-#define MAX_VOICES				64
+#include "ParamState.h"
+#include "VoiceProcessor.h"
+
 #define MAX_RELEASE_TIME_SEC	5.0
 #define NUM_FILTER_TYPE			3
 #define NUM_TUNING_RANGE		2
@@ -17,25 +21,6 @@
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-
-			//-----------------------------------------------------------------------------
-			// Global Parameters
-			//-----------------------------------------------------------------------------
-			enum
-			{
-				kParamMasterVolume,
-				kParamActiveVoices,
-
-				kNumGlobalParameters
-			};
-
-			//-----------------------------------------------------------------------------
-			/** Example Note Expression Edit Controller
-
-			\sa Steinberg::Vst::INoteExpressionController
-			\sa Steinberg::Vst::NoteExpressionTypeContainer
-			\sa Steinberg::Vst::NoteExpressionType
-			*/
 			class Controller : public EditController,
 				public IMidiMapping
 			{
@@ -60,9 +45,7 @@ namespace Steinberg {
 					REFCOUNT_METHODS(EditController)
 
 			protected:
-				NoteExpressionTypeContainer noteExpressionTypes;
-
-				static constexpr ParamID InvalidParamID = std::numeric_limits<ParamID>::max();
+				static const ParamID INVALID_PARAM_ID = std::numeric_limits<ParamID>::max();
 
 				std::array<ParamID, ControllerNumbers::kCountCtrlNumber> midiCCMapping;
 			};

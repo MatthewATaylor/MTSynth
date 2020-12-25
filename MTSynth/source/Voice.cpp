@@ -1,64 +1,63 @@
 #include "Voice.h"
-#include "base/source/fstreamer.h"
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
+			const double Voice::PI = 3.141592653589793;
+			const double Voice::SAMPLE_RATE = 44100.0;
 
-			static uint64 currentParamStateVersion = 3;
-
-			//-----------------------------------------------------------------------------
-			tresult GlobalParameterState::setState(IBStream* stream)
-			{
-				IBStreamer s(stream, kLittleEndian);
-				if (!s.readDouble(masterVolume))
-					return kResultFalse;
-				return kResultTrue;
+			void Voice::noteOn(int32 noteID, int32 pitch, float tuning, float velocity, int32 sampleOffset) {
+				this->noteID = noteID;
+				this->pitch = pitch;
+				this->tuning = tuning;
+				this->noteOnVelocity = velocity;
+				this->noteOnSampleOffset = sampleOffset;
 			}
-
-			//-----------------------------------------------------------------------------
-			tresult GlobalParameterState::getState(IBStream* stream)
-			{
-				IBStreamer s(stream, kLittleEndian);
-				if (!s.writeDouble(masterVolume))
-					return kResultFalse;
-				return kResultTrue;
+			
+			void Voice::noteOff(float velocity, int32 sampleOffset) {
+				this->noteOffVelocity = velocity;
+				this->noteOffSampleOffset = sampleOffset;
 			}
+			
+			bool Voice::process(float *outputBuffers[2], int32 numSamples) {
+				volume = ParamState::global.volume;
+				double adjustedFreq = FrequencyTable::get()[pitch] * PI * 2 / SAMPLE_RATE;
 
-			//-----------------------------------------------------------------------------
-			float VoiceStatics::freqTab[kNumFrequencies];
-			const float VoiceStatics::scaleHeadRoom =
-				(float)(pow(10.0, -12.0 / 20.0) * 0.70710677); // for 12 dB head room
-			const float VoiceStatics::scaleNorm2GainC1 =
-				(float)(VoiceStatics::scaleHeadRoom * pow(10.0, 24.0 / 20.0));
-			const float VoiceStatics::scaleNorm2GainC2 =
-				(float)(24.0 / 20.0 / 0.30102999566398119521373889472449); // Mathd::kLog2
+				for (int32 i = 0; i < numSamples; ++i) {
+					this->noteOnSampleOffset--;
+					this->noteOffSampleOffset--;
 
-			const double VoiceStatics::kNormTuningOneOctave = 12.0 / 240.0; // full in VST 3 is +- 10 octaves
-			const double VoiceStatics::kNormTuningOneTune = 1.0 / 240.0;
+					if (this->noteOnSampleOffset <= 0) {
+						if (this->noteOffSampleOffset == 0) {
+							// Release
+							volume = 0;
+							this->noteOffSampleOffset = this->noteOnSampleOffset = -1;
+							return false;
+						}
+						
+						float sample = (float)std::sin(sampleIndex * adjustedFreq) * volume;
+						outputBuffers[0][i] += sample;
+						outputBuffers[1][i] += sample;
 
-			//-----------------------------------------------------------------------------
-			class VoiceStaticsOnce
-			{
-			public:
-				VoiceStaticsOnce()
-				{
-					// make frequency (Hz) table
-					double k = 1.059463094359; // 12th root of 2
-					double a = 6.875; // a
-					a *= k; // b
-					a *= k; // bb
-					a *= k; // c, frequency of midi note 0
-					for (int32 i = 0; i < VoiceStatics::kNumFrequencies; i++) // 128 midi notes
-					{
-						VoiceStatics::freqTab[i] = (float)a;
-						a *= k;
+						++sampleIndex;
 					}
 				}
-			};
 
-			static VoiceStaticsOnce gVoiceStaticsOnce;
-		} // NoteExpressionSynth
-	} // Vst
-} // Steinberg
+				return true;
+			}
+			
+			void Voice::reset() {
+				sampleIndex = 0;
+				noteID = -1;
+				pitch = -1;
+				tuning = 0.0f;
+				noteOnSampleOffset = -1;
+				noteOffSampleOffset = -1;
+			}
 
+			int32 Voice::getNoteID() {
+				return noteID;
+			}
+		}
+	}
+}

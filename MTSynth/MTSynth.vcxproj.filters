@@ -30,10 +30,16 @@
     <ClCompile Include="source\Filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Frequencies.cpp">
+    <ClCompile Include="source\Voice.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Voice.cpp">
+    <ClCompile Include="source\FrequencyTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ParamState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\VoiceProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,16 +56,16 @@
     <ClInclude Include="include\Filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Frequencies.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Voice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\VoiceProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\VoiceBase.h">
+    <ClInclude Include="include\FrequencyTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParamState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,68 +1,41 @@
 #pragma once
 
-#include "VoiceBase.h"
-#include "Controller.h"
+#include <cmath>
+
 #include "pluginterfaces/vst/ivstevents.h"
 #include "pluginterfaces/base/futils.h"
-#include <cmath>
-#include <algorithm>
-#include <string>
 
-#ifndef M_PI
-#define M_PI			3.14159265358979323846
-#endif
-#ifndef M_PI_MUL_2
-#define M_PI_MUL_2		6.28318530717958647692
-#endif
+#include "ParamState.h"
+#include "FrequencyTable.h"
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
+			class Voice {
+			private:
+				static const double PI;
+				static const double SAMPLE_RATE;
 
-			//-----------------------------------------------------------------------------
-			struct GlobalParameterState
-			{
+				uint32 sampleIndex = 0;
 
-				ParamValue masterVolume;	// [0, +1]
+				int32 noteID = -1;
+				int32 pitch = -1;
+				float tuning = 0.0f;
 
-				tresult setState(IBStream* stream);
-				tresult getState(IBStream* stream);
-			};
+				float noteOnVelocity = 0.0f;
+				float noteOffVelocity = 0.0f;
+				
+				int32 noteOnSampleOffset = 0;
+				int32 noteOffSampleOffset = 0;
 
-			//-----------------------------------------------------------------------------
-			enum VoiceParameters
-			{
-				kVolumeMod,
-				kNumParameters
-			};
+				ParamValue volume;
 
-			//-----------------------------------------------------------------------------
-			class VoiceStatics
-			{
 			public:
-				//------------------------------------------------------------------------
-				static double normalizedLevel2Gain(float normalized)
-				{
-					double level;
-					if (normalized >= 0.5)
-						level = scaleHeadRoom * ::pow(10, (normalized - 0.5f) * 24 / 20.0f);
-					else
-						level = scaleNorm2GainC1 * ::pow(normalized, scaleNorm2GainC2);
-
-					return level;
-				}
-
-				enum {
-					kNumFrequencies = 128
-				};
-
-				static float freqTab[kNumFrequencies];
-				static const float scaleHeadRoom;
-				static const float scaleNorm2GainC1;
-				static const float scaleNorm2GainC2;
-				static const double kNormTuningOneOctave;
-				static const double kNormTuningOneTune;
-
+				void noteOn(int32 noteID, int32 pitch, float tuning, float velocity, int32 sampleOffset);
+				void noteOff(float velocity, int32 sampleOffset);
+				bool process(float *outputBuffers[2], int32 numSamples);
+				void reset();
+				int32 getNoteID();
 			};
 
 			//-----------------------------------------------------------------------------
@@ -70,6 +43,7 @@ namespace Steinberg {
 
 			\sa Steinberg::Vst::VoiceBase
 			*/
+			/*
 			template<class SamplePrecision>
 			class Voice : public VoiceBase<kNumParameters, SamplePrecision, 2, GlobalParameterState>
 			{
@@ -82,7 +56,6 @@ namespace Steinberg {
 			protected:
 				uint32 n;
 
-				SamplePrecision sinusPhase;
 				ParamValue currentSinusF;
 				ParamValue currentVolume;
 			};
@@ -151,7 +124,7 @@ namespace Steinberg {
 
 				VoiceBase<kNumParameters, SamplePrecision, 2, GlobalParameterState>::reset();
 			}
-
+			*/
 		}
 	}
-} // namespaces
+}

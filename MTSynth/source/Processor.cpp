@@ -13,13 +13,9 @@ namespace Steinberg {
 			FUID Processor::cid(0x6EE65CD1, 0xB83A4AF4, 0x80AA7929, 0xAEA6B8A0);
 
 			//-----------------------------------------------------------------------------
-			Processor::Processor() : voiceProcessor(nullptr)
+			Processor::Processor()
 			{
 				setControllerClass(Controller::cid);
-
-				memset(&paramState, 0, sizeof(paramState));
-
-				paramState.masterVolume = 0.5;
 			}
 
 			//-----------------------------------------------------------------------------
@@ -37,13 +33,13 @@ namespace Steinberg {
 			//-----------------------------------------------------------------------------
 			tresult PLUGIN_API Processor::setState(IBStream* state)
 			{
-				return paramState.setState(state);
+				return ParamState::global.setState(state);
 			}
 
 			//-----------------------------------------------------------------------------
 			tresult PLUGIN_API Processor::getState(IBStream* state)
 			{
-				return paramState.getState(state);
+				return ParamState::global.getState(state);
 			}
 
 			//-----------------------------------------------------------------------------
@@ -73,35 +69,13 @@ namespace Steinberg {
 			{
 				if (state)
 				{
-					if (voiceProcessor == nullptr)
-					{
-						if (processSetup.symbolicSampleSize == kSample32)
-						{
-							voiceProcessor =
-								new VoiceProcessorImplementation<float, Voice<float>, 2, MAX_VOICES,
-								GlobalParameterState>(
-								(float)processSetup.sampleRate, &paramState);
-						}
-						else if (processSetup.symbolicSampleSize == kSample64)
-						{
-							voiceProcessor =
-								new VoiceProcessorImplementation<double, Voice<double>, 2, MAX_VOICES,
-								GlobalParameterState>(
-								(float)processSetup.sampleRate, &paramState);
-						}
-						else
-						{
-							return kInvalidArgument;
-						}
+					for (int i = 0; i < VoiceProcessor::MAX_VOICES; ++i) {
+						voiceProcessor.voices[i].reset();
 					}
 				}
 				else
 				{
-					if (voiceProcessor)
-					{
-						delete voiceProcessor;
-					}
-					voiceProcessor = nullptr;
+
 				}
 				return AudioEffect::setActive(state);
 			}
@@ -126,9 +100,9 @@ namespace Steinberg {
 							{
 								switch (pid)
 								{
-								case kParamMasterVolume:
+								case ParamState::VOLUME_ID:
 								{
-									paramState.masterVolume = value;
+									ParamState::global.volume = value;
 									break;
 								}
 								}
@@ -142,22 +116,22 @@ namespace Steinberg {
 				if (data.numOutputs < 1)
 					result = kResultTrue;
 				else
-					result = voiceProcessor->process(data);
+					result = voiceProcessor.process(data);
 				if (result == kResultTrue)
 				{
 					if (data.outputParameterChanges)
 					{
 						int32 index;
 						IParamValueQueue* queue =
-							data.outputParameterChanges->addParameterData(kParamActiveVoices, index);
+							data.outputParameterChanges->addParameterData(ParamState::ACTIVE_VOICES_ID, index);
 						if (queue)
 						{
 							queue->addPoint(
-								0, (ParamValue)voiceProcessor->getActiveVoices() / (ParamValue)MAX_VOICES,
+								0, (ParamValue)voiceProcessor.getActiveVoices() / (ParamValue)VoiceProcessor::MAX_VOICES,
 								index);
 						}
 					}
-					if (voiceProcessor->getActiveVoices() == 0 && data.numOutputs > 0)
+					if (voiceProcessor.getActiveVoices() == 0 && data.numOutputs > 0)
 					{
 						data.outputs[0].silenceFlags = 0x11; // left and right channel are silent
 					}

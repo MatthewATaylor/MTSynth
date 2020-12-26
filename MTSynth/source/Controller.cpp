@@ -12,15 +12,32 @@ namespace Steinberg {
 			tresult PLUGIN_API Controller::initialize(FUnknown *context) {
 				tresult result = EditController::initialize(context);
 				if (result == kResultTrue) {
-					Parameter *volumeParam = new RangeParameter(USTRING("Volume"), ParamState::VOLUME_ID, USTRING("%"), 0, 100, 80);
-					volumeParam->setPrecision(1);
-					parameters.addParameter(volumeParam);
+					Parameter *param = new RangeParameter(
+						USTRING("Master Volume"), ParamState::MASTER_VOLUME_ID,
+						USTRING("%"), 0, 100, 50
+					);
+					param->setPrecision(1);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Sine Volume"), ParamState::SINE_VOLUME_ID,
+						USTRING("%"), 0, 100, 100
+					);
+					param->setPrecision(1);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Square Volume"), ParamState::SQUARE_VOLUME_ID,
+						USTRING("%"), 0, 100, 0
+					);
+					param->setPrecision(1);
+					parameters.addParameter(param);
 
 					// Initialize MIDI control mapping
 					for (int i = 0; i < ControllerNumbers::kCountCtrlNumber; ++i) {
 						midiControllerMapping[i] = -1; // -1 = unused MIDI controls
 					}
-					midiControllerMapping[ControllerNumbers::kCtrlVolume] = ParamState::VOLUME_ID;
+					midiControllerMapping[ControllerNumbers::kCtrlVolume] = ParamState::MASTER_VOLUME_ID;
 				}
 				return kResultTrue;
 			}
@@ -29,7 +46,9 @@ namespace Steinberg {
 				ParamState paramState;
 				tresult result = paramState.setState(state);
 				if (result == kResultTrue) {
-					setParamNormalized(ParamState::VOLUME_ID, paramState.volume);
+					setParamNormalized(ParamState::MASTER_VOLUME_ID, paramState.masterVolume);
+					setParamNormalized(ParamState::SINE_VOLUME_ID, paramState.sineVolume);
+					setParamNormalized(ParamState::SQUARE_VOLUME_ID, paramState.squareVolume);
 				}
 				return result;
 			}

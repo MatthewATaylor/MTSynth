@@ -18,20 +18,25 @@ namespace Steinberg {
 
 			template <typename SampleType>
 			inline bool Voice::process(SampleType **outputBuffers, int32 numSamples, SampleRate sampleRate) {
-				volume = ParamState::global.volume;
+				sineVolume = ParamState::global.masterVolume * ParamState::global.sineVolume;
+				squareVolume = ParamState::global.masterVolume * ParamState::global.squareVolume;
 				double adjustedFreq = FrequencyTable::get()[pitch] * 2 * PI / sampleRate;
 
 				for (int32 i = 0; i < numSamples; ++i) {
 					if (noteOnSampleOffset <= 0) {
 						if (noteOffSampleOffset == 0) {
 							// Release
-							volume = 0;
+							sineVolume = 0;
+							squareVolume = 0;
 							return false;
 						}
 
-						SampleType sample = static_cast<SampleType>(std::sin(sampleIndex * adjustedFreq) * volume);
+						SampleType sineSample = static_cast<SampleType>(std::sin(sampleIndex * adjustedFreq));
+						SampleType squareSample = sineSample > 0 ? 1 : -1;
 						for (uint8 j = 0; j < NUM_CHANNELS; ++j) {
-							outputBuffers[j][i] += sample; // Add sample to each channel's buffer
+							// Add sample to each channel's buffer
+							outputBuffers[j][i] += sineSample * sineVolume;
+							outputBuffers[j][i] += squareSample * squareVolume;
 						}
 
 						++sampleIndex;
@@ -51,7 +56,8 @@ namespace Steinberg {
 				tuning = 0.0f;
 				noteOnSampleOffset = -1;
 				noteOffSampleOffset = -1;
-				volume = 0.0;
+				sineVolume = 0.0;
+				squareVolume = 0.0;
 			}
 
 			inline int32 Voice::getNoteID() const {

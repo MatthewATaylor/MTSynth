@@ -76,8 +76,14 @@ namespace Steinberg {
 							// Grab the last point in the queue (could grab all points for more accurate sampling)
 							if (queue->getPoint(queue->getPointCount() - 1, sampleOffset, value) == kResultTrue) {
 								switch (queue->getParameterId()) {
-								case ParamState::VOLUME_ID:
-									ParamState::global.volume = value;
+								case ParamState::MASTER_VOLUME_ID:
+									ParamState::global.masterVolume = value;
+									break;
+								case ParamState::SINE_VOLUME_ID:
+									ParamState::global.sineVolume = value;
+									break;
+								case ParamState::SQUARE_VOLUME_ID:
+									ParamState::global.squareVolume = value;
 									break;
 								}
 							}

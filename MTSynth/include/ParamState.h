@@ -11,10 +11,14 @@ namespace Steinberg {
 				static ParamState global;
 
 				enum {
-					VOLUME_ID
+					MASTER_VOLUME_ID,
+					SINE_VOLUME_ID,
+					SQUARE_VOLUME_ID
 				};
 
-				ParamValue volume = 0.5;
+				ParamValue masterVolume = 0.5;
+				ParamValue sineVolume = 1.0;
+				ParamValue squareVolume = 0.0;
 
 				tresult getState(IBStream *stream);
 				tresult setState(IBStream *stream);

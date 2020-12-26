@@ -1,9 +1,9 @@
-#include "VoiceProcessor.h"
+#pragma once
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-			Voice *VoiceProcessor::getBestVoice(int32 noteID) {
+			inline Voice *VoiceProcessor::getBestVoice(int32 noteID) {
 				Voice *firstFreeVoice = nullptr;
 				if (noteID != -1) {
 					for (int32 i = 0; i < MAX_VOICES; ++i) {
@@ -17,8 +17,8 @@ namespace Steinberg {
 				}
 				return firstFreeVoice;
 			}
-			
-			Voice *VoiceProcessor::findMatchingVoice(int32 noteID) {
+
+			inline Voice *VoiceProcessor::findMatchingVoice(int32 noteID) {
 				if (noteID != -1) {
 					for (int32 i = 0; i < MAX_VOICES; ++i) {
 						if (voices[i].getNoteID() == noteID) {
@@ -29,7 +29,8 @@ namespace Steinberg {
 				return nullptr;
 			}
 
-			tresult VoiceProcessor::process(ProcessData &data) {
+			template <typename SampleType>
+			inline tresult VoiceProcessor::process(ProcessData &data, SampleRate sampleRate) {
 				int32 numSamples = data.numSamples;
 				int32 samplesProcessed = 0;
 
@@ -47,10 +48,18 @@ namespace Steinberg {
 				}
 
 				// Initialize audio output buffers
-				float *buffers[NUM_CHANNELS];
-				for (uint8 i = 0; i < NUM_CHANNELS; ++i) {
-					buffers[i] = (float*)data.outputs[0].channelBuffers32[i];
-					memset(buffers[i], 0, data.numSamples * sizeof(float)); // Set buffer to all zeros
+				SampleType **buffers;
+				if (typeid(SampleType) == typeid(Sample32)) {
+					buffers = (SampleType**)data.outputs[0].channelBuffers32;
+				}
+				else if (typeid(SampleType) == typeid(Sample64)) {
+					buffers = (SampleType**)data.outputs[0].channelBuffers64;
+				}
+				else {
+					return kInvalidArgument;
+				}
+				for (uint8 i = 0; i < Voice::NUM_CHANNELS; ++i) {
+					std::memset(buffers[i], 0, data.numSamples * sizeof(SampleType)); // Set buffer to all zeros
 				}
 
 				while (numSamples > 0) {
@@ -99,7 +108,7 @@ namespace Steinberg {
 					// Process chunk
 					for (uint8 i = 0; i < MAX_VOICES; ++i) {
 						if (voices[i].getNoteID() != -1) {
-							if (!voices[i].process(buffers, samplesToProcess)) {
+							if (!voices[i].process(buffers, samplesToProcess, sampleRate)) {
 								// Voice is now inactive
 								voices[i].reset();
 								--numActiveVoices;
@@ -107,7 +116,7 @@ namespace Steinberg {
 						}
 					}
 
-					for (uint8 i = 0; i < NUM_CHANNELS; ++i) {
+					for (uint8 i = 0; i < Voice::NUM_CHANNELS; ++i) {
 						buffers[i] += samplesToProcess; // Move buffer pointer forwards
 					}
 					numSamples -= samplesToProcess;
@@ -117,7 +126,7 @@ namespace Steinberg {
 				return kResultTrue;
 			}
 
-			int32 VoiceProcessor::getNumActiveVoices() const {
+			inline int32 VoiceProcessor::getNumActiveVoices() const {
 				return numActiveVoices;
 			}
 		}

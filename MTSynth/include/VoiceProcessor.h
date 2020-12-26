@@ -1,6 +1,8 @@
 #pragma once
 
 #include <algorithm>
+#include <cstring>
+#include <typeinfo>
 
 #include "base/source/fdebug.h"
 #include "pluginterfaces/vst/ivstaudioprocessor.h"
@@ -14,24 +16,27 @@ namespace Steinberg {
 			class VoiceProcessor {
 			private:
 				static const uint8 CHUNK_SIZE = 32; // Samples per processing chunk
-				static const uint8 NUM_CHANNELS = 2; // Left and right channels
 
 				int32 numActiveVoices = 0;
 
 				// Return matching voice or first free voice if no match is found
-				Voice *getBestVoice(int32 noteID);
+				inline Voice *getBestVoice(int32 noteID);
 
 				// Return matching voice or nullptr if no match is found
-				Voice *findMatchingVoice(int32 noteID);
+				inline Voice *findMatchingVoice(int32 noteID);
 
 			public:
 				static const uint8 MAX_VOICES = 64;
 
 				Voice voices[MAX_VOICES];
 
-				tresult process(ProcessData &data);
-				int32 getNumActiveVoices() const;
+				template <typename SampleType>
+				inline tresult process(ProcessData &data, SampleRate sampleRate);
+				
+				inline int32 getNumActiveVoices() const;
 			};
 		}
 	}
 }
+
+#include "../source/VoiceProcessor.inl"

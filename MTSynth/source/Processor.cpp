@@ -60,9 +60,6 @@ namespace Steinberg {
 						voiceProcessor.voices[i].reset();
 					}
 				}
-				else {
-
-				}
 				return AudioEffect::setActive(state);
 			}
 
@@ -94,7 +91,15 @@ namespace Steinberg {
 					result = kResultTrue;
 				}
 				else {
-					result = voiceProcessor.process(data);
+					if (processSetup.symbolicSampleSize == kSample32) {
+						result = voiceProcessor.process<Sample32>(data, processSetup.sampleRate);
+					}
+					else if (processSetup.symbolicSampleSize == kSample64) {
+						result = voiceProcessor.process<Sample64>(data, processSetup.sampleRate);
+					}
+					else {
+						return kInvalidArgument;
+					}
 				}
 
 				if (result == kResultTrue) {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <exception>
+
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 #include "ParamState.h"

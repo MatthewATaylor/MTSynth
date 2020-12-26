@@ -15,8 +15,7 @@ namespace Steinberg {
 		namespace mts {
 			class Voice {
 			private:
-				static const double PI;
-				static const double SAMPLE_RATE;
+				inline static const double PI = 3.141592653589793;
 
 				uint32 sampleIndex = 0;
 
@@ -33,12 +32,19 @@ namespace Steinberg {
 				ParamValue volume;
 
 			public:
-				void noteOn(int32 noteID, int32 pitch, float tuning, float velocity, int32 sampleOffset);
-				void noteOff(float velocity, int32 sampleOffset);
-				bool process(float *outputBuffers[2], int32 numSamples);
-				void reset();
-				int32 getNoteID() const;
+				static const uint8 NUM_CHANNELS = 2; // Left and right channels
+
+				inline void noteOn(int32 noteID, int32 pitch, float tuning, float velocity, int32 sampleOffset);
+				inline void noteOff(float velocity, int32 sampleOffset);
+				
+				template <typename SampleType>
+				inline bool process(SampleType **outputBuffers, int32 numSamples, SampleRate sampleRate);
+				
+				inline void reset();
+				inline int32 getNoteID() const;
 			};
 		}
 	}
 }
+
+#include "../source/Voice.inl"

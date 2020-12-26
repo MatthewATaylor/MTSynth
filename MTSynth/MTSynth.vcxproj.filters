@@ -30,16 +30,10 @@
     <ClCompile Include="source\Filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Voice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\FrequencyTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\ParamState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\VoiceProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,5 +62,13 @@
     <ClInclude Include="include\ParamState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\VoiceProcessor.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="source\Voice.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

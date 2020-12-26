@@ -70,6 +70,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;DEVELOPMENT=1;SMTG_RENAME_ASSERT=1;_UNICODE;CMAKE_INTDIR="Debug";MTSynth_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;DEVELOPMENT=1;SMTG_RENAME_ASSERT=1;_UNICODE;CMAKE_INTDIR=\"Debug\";MTSynth_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -120,6 +121,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;RELEASE=1;SMTG_RENAME_ASSERT=1;_UNICODE;CMAKE_INTDIR="Release";MTSynth_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;RELEASE=1;SMTG_RENAME_ASSERT=1;_UNICODE;CMAKE_INTDIR=\"Release\";MTSynth_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -165,8 +167,10 @@
     <ClCompile Include="source\FrequencyTable.cpp" />
     <ClCompile Include="source\ParamState.cpp" />
     <ClCompile Include="source\Processor.cpp" />
-    <ClCompile Include="source\Voice.cpp" />
-    <ClCompile Include="source\VoiceProcessor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="source\Voice.inl" />
+    <None Include="source\VoiceProcessor.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

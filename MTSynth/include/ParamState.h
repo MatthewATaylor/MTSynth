@@ -11,8 +11,7 @@ namespace Steinberg {
 				static ParamState global;
 
 				enum {
-					VOLUME_ID,
-					ACTIVE_VOICES_ID
+					VOLUME_ID
 				};
 
 				ParamValue volume = 0.5;

@@ -16,16 +16,6 @@ namespace Steinberg {
 					volumeParam->setPrecision(1);
 					parameters.addParameter(volumeParam);
 
-					parameters.addParameter(
-						new RangeParameter(
-							USTRING("Active Voices"),
-							ParamState::ACTIVE_VOICES_ID, nullptr,
-							0, VoiceProcessor::MAX_VOICES,
-							0, VoiceProcessor::MAX_VOICES,
-							ParameterInfo::kIsReadOnly
-						)
-					);
-
 					// Initialize MIDI control mapping
 					for (int i = 0; i < ControllerNumbers::kCountCtrlNumber; ++i) {
 						midiControllerMapping[i] = -1; // -1 = unused MIDI controls

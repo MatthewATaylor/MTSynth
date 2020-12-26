@@ -21,7 +21,7 @@ namespace Steinberg {
 			
 			bool Voice::process(float *outputBuffers[2], int32 numSamples) {
 				volume = ParamState::global.volume;
-				//double adjustedFreq = FrequencyTable::get()[pitch] * 2 * PI / SAMPLE_RATE;
+				double adjustedFreq = FrequencyTable::get()[pitch] * 2 * PI / SAMPLE_RATE;
 
 				for (int32 i = 0; i < numSamples; ++i) {
 					if (noteOnSampleOffset <= 0) {
@@ -31,8 +31,7 @@ namespace Steinberg {
 							return false;
 						}
 						
-						//float sample = static_cast<float>(std::sin(sampleIndex * adjustedFreq) * volume);
-						float sample = static_cast<float>(std::sin(sampleIndex * 440 * 2 * PI / SAMPLE_RATE) * volume);
+						float sample = static_cast<float>(std::sin(sampleIndex * adjustedFreq) * volume);
 						outputBuffers[0][i] += sample;
 						outputBuffers[1][i] += sample;
 
@@ -53,6 +52,7 @@ namespace Steinberg {
 				tuning = 0.0f;
 				noteOnSampleOffset = -1;
 				noteOffSampleOffset = -1;
+				volume = 0.0;
 			}
 
 			int32 Voice::getNoteID() const {

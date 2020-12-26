@@ -98,19 +98,7 @@ namespace Steinberg {
 				}
 
 				if (result == kResultTrue) {
-					if (data.outputParameterChanges) {
-						int32 index;
-						IParamValueQueue *queue = data.outputParameterChanges->addParameterData(ParamState::ACTIVE_VOICES_ID, index);
-						if (queue) {
-							queue->addPoint(
-								0,
-								static_cast<ParamValue>(voiceProcessor.getNumActiveVoices()) / VoiceProcessor::MAX_VOICES,
-								index
-							);
-						}
-					}
-					if (voiceProcessor.getNumActiveVoices() == 0 && data.numOutputs > 0)
-					{
+					if (voiceProcessor.getNumActiveVoices() == 0 && data.numOutputs > 0) {
 						data.outputs[0].silenceFlags = 0x11; // Make left and right channels silent
 					}
 				}

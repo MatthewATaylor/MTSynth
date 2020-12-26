@@ -38,11 +38,12 @@ namespace Steinberg {
 				int32 eventIndex = 0;
 
 				Event e = {};
-				bool canProcessEvents = true;
+				bool canProcessEvents = false;
 
 				// Get first event
 				if (numEvents) {
 					inputEvents->getEvent(0, e);
+					canProcessEvents = true;
 				}
 
 				// Initialize audio output buffers

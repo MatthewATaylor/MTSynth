@@ -29,9 +29,6 @@ namespace Steinberg {
 				int32 noteOnSampleOffset = 0;
 				int32 noteOffSampleOffset = 0;
 
-				ParamValue sineVolume;
-				ParamValue squareVolume;
-
 			public:
 				static const uint8 NUM_CHANNELS = 2; // Left and right channels
 

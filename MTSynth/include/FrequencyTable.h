@@ -1,7 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
+#include "base/source/fdebug.h"
 #include "pluginterfaces/base/ftypes.h"
 
 namespace Steinberg {
@@ -14,7 +16,7 @@ namespace Steinberg {
 				FrequencyTable();
 
 			public:
-				// Get table of 128 frequencies (from C2 to G8, where A4 = 440 Hz)
+				// Get table of 128 frequencies (starting at C0)
 				static double *get();
 			};
 		}

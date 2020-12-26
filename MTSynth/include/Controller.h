@@ -1,56 +1,45 @@
 #pragma once
 
-#include <array>
-#include <limits>
-
 #include "base/source/fstreamer.h"
+#include "base/source/fstring.h"
 #include "public.sdk/source/vst/vsteditcontroller.h"
 #include "public.sdk/source/vst/vstnoteexpressiontypes.h"
 #include "pluginterfaces/vst/ivstmidicontrollers.h"
 #include "pluginterfaces/vst/ivstmidilearn.h"
 #include "pluginterfaces/vst/ivstnoteexpression.h"
 #include "pluginterfaces/vst/ivstphysicalui.h"
+#include "pluginterfaces/base/futils.h"
+#include "pluginterfaces/base/ustring.h"
 
 #include "ParamState.h"
+#include "Voice.h"
 #include "VoiceProcessor.h"
-
-#define MAX_RELEASE_TIME_SEC	5.0
-#define NUM_FILTER_TYPE			3
-#define NUM_TUNING_RANGE		2
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-			class Controller : public EditController,
-				public IMidiMapping
-			{
+			class Controller : public EditController, public IMidiMapping {
+			private:
+				int midiControllerMapping[ControllerNumbers::kCountCtrlNumber];
+
 			public:
-				//--- EditController -----------------------------
-				tresult PLUGIN_API initialize(FUnknown* context) SMTG_OVERRIDE;
-				tresult PLUGIN_API terminate() SMTG_OVERRIDE;
-				tresult PLUGIN_API setComponentState(IBStream* state) SMTG_OVERRIDE;
+				static const FUID ID;
 
-				//--- IMidiMapping -------------------------------
-				tresult PLUGIN_API getMidiControllerAssignment(int32 busIndex, int16 channel, CtrlNumber midiControllerNumber, ParamID& id/*out*/) SMTG_OVERRIDE;
+				static FUnknown* createInstance(void*);
 
-				//--- ---------------------------------------------
-				static FUnknown* createInstance(void*) { return (IEditController*)new Controller(); }
+				// EditController
+				tresult PLUGIN_API initialize(FUnknown *context) SMTG_OVERRIDE;
+				tresult PLUGIN_API setComponentState(IBStream *state) SMTG_OVERRIDE;
 
-				static FUID cid;
+				// IMidiMapping
+				tresult PLUGIN_API getMidiControllerAssignment(int32 busIndex, int16 channel, CtrlNumber midiControllerNumber, ParamID &id) SMTG_OVERRIDE;
 
 				OBJ_METHODS(Controller, EditController)
-					DEFINE_INTERFACES
+				DEFINE_INTERFACES
 					DEF_INTERFACE(IMidiMapping)
-					END_DEFINE_INTERFACES(EditController)
-					REFCOUNT_METHODS(EditController)
-
-			protected:
-				static const ParamID INVALID_PARAM_ID = std::numeric_limits<ParamID>::max();
-
-				std::array<ParamID, ControllerNumbers::kCountCtrlNumber> midiCCMapping;
+				END_DEFINE_INTERFACES(EditController)
+				REFCOUNT_METHODS(EditController)
 			};
-
-			//------------------------------------------------------------------------
-		} // NoteExpressionSynth
-	} // Vst
-} // Steinberg
+		}
+	}
+}

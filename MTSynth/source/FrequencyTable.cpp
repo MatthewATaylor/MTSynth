@@ -4,9 +4,10 @@ namespace Steinberg {
 	namespace Vst {
 		namespace mts {
 			FrequencyTable::FrequencyTable() {
-				const double C2 = 65.40639;
+				const double C0 = 16.35160;
 				for (uint8 i = 0; i < 128; ++i) {
-					table[i] = C2 * std::pow(2.0, i / 12.0);
+					table[i] = C0 * std::pow(2.0, i / 12.0);
+					FDebugPrint((std::to_string(i) + " " + std::to_string(table[i]) + "\n").c_str());
 				}
 			}
 

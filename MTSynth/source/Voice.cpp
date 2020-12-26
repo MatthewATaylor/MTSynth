@@ -21,26 +21,25 @@ namespace Steinberg {
 			
 			bool Voice::process(float *outputBuffers[2], int32 numSamples) {
 				volume = ParamState::global.volume;
-				double adjustedFreq = FrequencyTable::get()[pitch] * PI * 2 / SAMPLE_RATE;
+				double adjustedFreq = FrequencyTable::get()[pitch] * 2 * PI / SAMPLE_RATE;
 
 				for (int32 i = 0; i < numSamples; ++i) {
-					if (this->noteOnSampleOffset <= 0) {
-						if (this->noteOffSampleOffset == 0) {
+					if (noteOnSampleOffset <= 0) {
+						if (noteOffSampleOffset == 0) {
 							// Release
 							volume = 0;
-							this->noteOffSampleOffset = this->noteOnSampleOffset = -1;
 							return false;
 						}
 						
-						float sample = (float)std::sin(sampleIndex * adjustedFreq) * volume;
+						float sample = static_cast<float>(std::sin(sampleIndex * adjustedFreq) * volume);
 						outputBuffers[0][i] += sample;
 						outputBuffers[1][i] += sample;
 
 						++sampleIndex;
 					}
 
-					--this->noteOnSampleOffset;
-					--this->noteOffSampleOffset;
+					--noteOnSampleOffset;
+					--noteOffSampleOffset;
 				}
 
 				return true;
@@ -55,7 +54,7 @@ namespace Steinberg {
 				noteOffSampleOffset = -1;
 			}
 
-			int32 Voice::getNoteID() {
+			int32 Voice::getNoteID() const {
 				return noteID;
 			}
 		}

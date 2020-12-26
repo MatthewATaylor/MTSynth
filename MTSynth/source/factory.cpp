@@ -6,7 +6,7 @@
 
 BEGIN_FACTORY_DEF(meta::COMPANY_NAME, meta::COMPANY_WEBSITE, meta::COMPANY_EMAIL)
 	DEF_CLASS2(
-		INLINE_UID_FROM_FUID(Steinberg::Vst::mts::Controller::cid),
+		INLINE_UID_FROM_FUID(Steinberg::Vst::mts::Controller::ID),
 		PClassInfo::kManyInstances,
 		kVstComponentControllerClass,
 		meta::CONTROLLER_NAME,
@@ -17,7 +17,7 @@ BEGIN_FACTORY_DEF(meta::COMPANY_NAME, meta::COMPANY_WEBSITE, meta::COMPANY_EMAIL
 		Steinberg::Vst::mts::Controller::createInstance
 	)
 	DEF_CLASS2(
-		INLINE_UID_FROM_FUID(Steinberg::Vst::mts::Processor::cid),
+		INLINE_UID_FROM_FUID(Steinberg::Vst::mts::Processor::ID),
 		PClassInfo::kManyInstances,
 		kVstAudioEffectClass,
 		meta::NAME,

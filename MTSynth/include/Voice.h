@@ -1,7 +1,9 @@
 #pragma once
 
 #include <cmath>
+#include <string>
 
+#include "base/source/fdebug.h"
 #include "pluginterfaces/vst/ivstevents.h"
 #include "pluginterfaces/base/futils.h"
 
@@ -35,7 +37,7 @@ namespace Steinberg {
 				void noteOff(float velocity, int32 sampleOffset);
 				bool process(float *outputBuffers[2], int32 numSamples);
 				void reset();
-				int32 getNoteID();
+				int32 getNoteID() const;
 			};
 		}
 	}

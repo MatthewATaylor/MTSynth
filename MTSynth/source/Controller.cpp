@@ -42,17 +42,6 @@ namespace Steinberg {
 				return kResultTrue;
 			}
 
-			tresult PLUGIN_API Controller::setComponentState(IBStream *state) {
-				ParamState paramState;
-				tresult result = paramState.setState(state);
-				if (result == kResultTrue) {
-					setParamNormalized(ParamState::MASTER_VOLUME_ID, paramState.masterVolume);
-					setParamNormalized(ParamState::SINE_VOLUME_ID, paramState.sineVolume);
-					setParamNormalized(ParamState::SQUARE_VOLUME_ID, paramState.squareVolume);
-				}
-				return result;
-			}
-
 			tresult PLUGIN_API Controller::getMidiControllerAssignment(int32 busIndex, int16 channel, CtrlNumber midiControllerNumber, ParamID &id) {
 				if (busIndex == 0 && channel == 0 && midiControllerNumber < kCountCtrlNumber && midiControllerMapping[midiControllerNumber] != -1) {
 					// Map MIDI controller number to parameter ID

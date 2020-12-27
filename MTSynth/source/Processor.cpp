@@ -38,11 +38,11 @@ namespace Steinberg {
 			}
 
 			tresult PLUGIN_API Processor::getState(IBStream *state) {
-				return ParamState::global.getState(state);
+				return ParamState::getState(state);
 			}
 
 			tresult PLUGIN_API Processor::setState(IBStream *state) {
-				return ParamState::global.setState(state);
+				return ParamState::setState(state);
 			}
 
 			tresult PLUGIN_API Processor::canProcessSampleSize(int32 symbolicSampleSize) {
@@ -77,13 +77,24 @@ namespace Steinberg {
 							if (queue->getPoint(queue->getPointCount() - 1, sampleOffset, value) == kResultTrue) {
 								switch (queue->getParameterId()) {
 								case ParamState::MASTER_VOLUME_ID:
-									ParamState::global.masterVolume = value;
+									ParamState::masterVolume = value;
+									break;
+								case ParamState::TUNING_ID:
+									ParamState::tuning = value * 400 - 200;
 									break;
 								case ParamState::SINE_VOLUME_ID:
-									ParamState::global.sineVolume = value;
+									ParamState::sineVolume = value;
 									break;
 								case ParamState::SQUARE_VOLUME_ID:
-									ParamState::global.squareVolume = value;
+									ParamState::squareVolume = value;
+									break;
+								case ParamState::FILTER_TYPE_ID:
+									ParamState::filterType = static_cast<ParamState::FilterType>(
+										static_cast<int8>(std::round(value))
+									);
+									break;
+								case ParamState::FILTER_CUTOFF_ID:
+									ParamState::filterCutoff = std::pow(2, value * 14.3);
 									break;
 								}
 							}

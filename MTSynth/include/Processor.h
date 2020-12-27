@@ -1,6 +1,6 @@
 #pragma once
 
-#include <exception>
+#include <cmath>
 
 #include "public.sdk/source/vst/vstaudioeffect.h"
 

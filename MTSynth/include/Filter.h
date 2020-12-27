@@ -3,18 +3,21 @@
 #include <chrono>
 #include <stdexcept>
 
-class Filter {
-private:
-	unsigned int prevInput = 0;
-	unsigned int prevHighPassOutput = 0;
-	unsigned int prevLowPassOutput = 0;
+#include "pluginterfaces/vst/vsttypes.h"
 
-	//std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
+namespace Steinberg {
+	namespace Vst {
+		namespace mts {
+			class Filter {
+			private:
+				double prevInput = 0.0;
+				double prevOutput = 0.0;
 
-public:
-	enum class Type {
-		LOW_PASS, HIGH_PASS, BAND_PASS
-	};
-
-	unsigned int get(unsigned int input, double rc, Type type);
-};
+			public:
+				double getLowPass(double input, double rc, SampleRate sampleRate);
+				double getHighPass(double input, double rc, SampleRate sampleRate);
+				void reset();
+			};
+		}
+	}
+}

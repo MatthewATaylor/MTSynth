@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cmath>
-#include <string>
 
 #include "base/source/fdebug.h"
 #include "pluginterfaces/vst/ivstevents.h"
@@ -9,6 +8,7 @@
 
 #include "ParamState.h"
 #include "FrequencyTable.h"
+#include "Filter.h"
 
 namespace Steinberg {
 	namespace Vst {
@@ -28,6 +28,8 @@ namespace Steinberg {
 				
 				int32 noteOnSampleOffset = 0;
 				int32 noteOffSampleOffset = 0;
+
+				Filter filter;
 
 			public:
 				static const uint8 NUM_CHANNELS = 2; // Left and right channels

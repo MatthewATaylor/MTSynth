@@ -8,20 +8,29 @@ namespace Steinberg {
 		namespace mts {
 			class ParamState {
 			public:
-				static ParamState global;
-
 				enum {
 					MASTER_VOLUME_ID,
+					TUNING_ID,
 					SINE_VOLUME_ID,
-					SQUARE_VOLUME_ID
+					SQUARE_VOLUME_ID,
+					FILTER_TYPE_ID,
+					FILTER_CUTOFF_ID
 				};
 
-				ParamValue masterVolume = 0.5;
-				ParamValue sineVolume = 1.0;
-				ParamValue squareVolume = 0.0;
+				enum class FilterType {
+					LOW_PASS,
+					HIGH_PASS
+				};
 
-				tresult getState(IBStream *stream);
-				tresult setState(IBStream *stream);
+				static ParamValue masterVolume;
+				static ParamValue tuning;
+				static ParamValue sineVolume;
+				static ParamValue squareVolume;
+				static FilterType filterType;
+				static ParamValue filterCutoff;
+
+				static tresult getState(IBStream *stream);
+				static tresult setState(IBStream *stream);
 			};
 		}
 	}

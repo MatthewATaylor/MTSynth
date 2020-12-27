@@ -1,44 +1,33 @@
 #include "Filter.h"
 
-unsigned int Filter::get(unsigned int input, double rc, Type type) {
-	return 0;
-	/*
-	auto currentTime = std::chrono::steady_clock::now();
-	double elapsedTime_s =
-		std::chrono::duration_cast<std::chrono::duration<double, std::chrono::seconds>>(
-			currentTime - prevTime
-		).count();
+namespace Steinberg {
+	namespace Vst {
+		namespace mts {
+			double Filter::getLowPass(double input, double rc, SampleRate sampleRate) {
+				double elapsedTime = 1.0 / sampleRate;
+				double alpha = elapsedTime / (rc + elapsedTime);
+				double output = alpha * input + (1 - alpha) * prevOutput;
 
-	// High-pass RC filter -> low-pass RC filter
+				prevOutput = output;
 
-	// High-pass filter component
-	double highPassAlpha = rc / (rc + elapsedTime_s);
-	unsigned int highPassOutput = highPassAlpha * prevHighPassOutput +
-		highPassAlpha * (input - prevInput);
+				return output;
+			}
+			
+			double Filter::getHighPass(double input, double rc, SampleRate sampleRate) {
+				double elapsedTime = 1.0 / sampleRate;
+				double alpha = rc / (rc + elapsedTime);
+				double output = alpha * prevOutput + alpha * (input - prevInput);
+				
+				prevInput = input;
+				prevOutput = output;
 
-	// Low-pass filter component
-	double lowPassAlpha = elapsedTime_s / (rc + elapsedTime_s);
-	unsigned int lowPassOutput = lowPassAlpha * highPassOutput +
-		(1 - lowPassAlpha) * prevLowPassOutput;
+				return output;
+			}
 
-	prevInput = input;
-	prevHighPassOutput = highPassOutput;
-	prevLowPassOutput = lowPassOutput;
-
-	prevTime = currentTime;
-
-	switch (type) {
-	case Type::LOW_PASS:
-		return input - highPassOutput;
-		break;
-	case Type::HIGH_PASS:
-		return highPassOutput - lowPassOutput;
-		break;
-	case Type::BAND_PASS:
-		return lowPassOutput;
-		break;
+			void Filter::reset() {
+				prevInput = 0.0;
+				prevOutput = 0.0;
+			}
+		}
 	}
-
-	throw std::exception("Unimplemented filter type");
-	*/
 }

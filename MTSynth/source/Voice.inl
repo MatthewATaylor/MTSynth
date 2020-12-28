@@ -25,6 +25,15 @@ namespace Steinberg {
 				double freq = FrequencyTable::get()[pitch] * std::pow(2, ParamState::tuning / 1200);
 				double adjustedFreq = freq * 2 * PI / sampleRate; // Used to calculate sample values
 
+				// Adjust phase to prevent pitch bend crackle
+				if (prevFreq < 0.0) {
+					prevFreq = adjustedFreq;
+				}
+				if (adjustedFreq != prevFreq) {
+					sinePhase += (prevFreq - adjustedFreq) * sampleIndex;
+					prevFreq = adjustedFreq;
+				}
+
 				for (int32 i = 0; i < numSamples; ++i) {
 					if (noteOnSampleOffset <= 0) {
 						if (noteOffSampleOffset == 0) {
@@ -32,7 +41,9 @@ namespace Steinberg {
 							return false;
 						}
 
-						SampleType sineSample = static_cast<SampleType>(std::sin(sampleIndex * adjustedFreq));
+						SampleType sineSample = static_cast<SampleType>(
+							std::sin(sampleIndex * adjustedFreq + sinePhase)
+						);
 						SampleType squareSample = sineSample > 0 ? 1 : -1;
 						SampleType oscillatorOutput = sineSample * sineVolume + squareSample * squareVolume;
 						
@@ -72,7 +83,10 @@ namespace Steinberg {
 				tuning = 0.0f;
 				noteOnSampleOffset = -1;
 				noteOffSampleOffset = -1;
+				
 				filter.reset();
+				sinePhase = 0.0;
+				prevFreq = -1.0;
 			}
 
 			inline int32 Voice::getNoteID() const {

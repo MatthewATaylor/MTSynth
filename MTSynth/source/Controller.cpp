@@ -60,6 +60,7 @@ namespace Steinberg {
 					}
 					midiControllerMapping[ControllerNumbers::kCtrlVolume] = ParamState::MASTER_VOLUME_ID;
 					midiControllerMapping[ControllerNumbers::kPitchBend] = ParamState::TUNING_ID;
+					midiControllerMapping[ControllerNumbers::kCtrlModWheel] = ParamState::FILTER_CUTOFF_ID;
 				}
 				return kResultTrue;
 			}

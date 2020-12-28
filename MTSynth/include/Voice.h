@@ -30,6 +30,8 @@ namespace Steinberg {
 				int32 noteOffSampleOffset = 0;
 
 				Filter filter;
+				double sinePhase = 0.0;
+				double prevFreq = -1.0;
 
 			public:
 				static const uint8 NUM_CHANNELS = 2; // Left and right channels

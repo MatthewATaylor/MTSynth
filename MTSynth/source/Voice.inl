@@ -41,9 +41,13 @@ namespace Steinberg {
 				for (int32 i = 0; i < numSamples; ++i) {
 					if (noteOnSampleOffset <= 0) {
 						double volumeEnvelopeValue;
+						double filterEnvelopeValue;
 						if (noteOffSampleOffset <= 0 && noteTurnedOff) {
 							// Release
 							volumeEnvelopeValue = volumeEnvelope.calculate(
+								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF
+							);
+							filterEnvelopeValue = filterEnvelope.calculate(
 								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF
 							);
 							if (volumeEnvelopeValue <= 0.000001) {
@@ -55,6 +59,9 @@ namespace Steinberg {
 							volumeEnvelopeValue = volumeEnvelope.calculate(
 								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON
 							);
+							filterEnvelopeValue = filterEnvelope.calculate(
+								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON
+							);
 						}
 
 						SampleType sineSample = static_cast<SampleType>(
@@ -64,6 +71,7 @@ namespace Steinberg {
 						SampleType oscillatorOutput = sineSample * sineVolume + squareSample * squareVolume;
 						oscillatorOutput *= volumeEnvelopeValue;
 						
+						// TODO: Apply filter envelope
 						SampleType filterOutput;
 						switch (ParamState::filterType) {
 						case ParamState::FilterType::LOW_PASS:

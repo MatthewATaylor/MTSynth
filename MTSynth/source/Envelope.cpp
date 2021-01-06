@@ -3,35 +3,37 @@
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
+			Envelope::Envelope(const EnvelopeParamState *paramState) : paramState(paramState) {}
+
 			double Envelope::calculate(int32 sampleOffset, SampleRate sampleRate, State state) {
 				double samplePeriod_s = 1.0 / sampleRate;
 				double sampleTime_s = samplePeriod_s * sampleOffset;
 				if (state == State::NOTE_ON) {
-					if (sampleTime_s <= ParamState::volumeEnvelopeParams.a) {
+					if (sampleTime_s <= paramState->a) {
 						// Attack
-						if (ParamState::volumeEnvelopeParams.a == 0) {
+						if (paramState->a == 0) {
 							prevValue = 1.0;
 						}
 						else {
-							prevValue += 1.0 / ParamState::volumeEnvelopeParams.a * samplePeriod_s;
+							prevValue += 1.0 / paramState->a * samplePeriod_s;
 						}
 					}
-					if (sampleTime_s >= ParamState::volumeEnvelopeParams.a &&
-						sampleTime_s <= ParamState::volumeEnvelopeParams.a + ParamState::volumeEnvelopeParams.d
+					if (sampleTime_s >= paramState->a &&
+						sampleTime_s <= paramState->a + paramState->d
 					) {
 						// Decay
-						if (ParamState::volumeEnvelopeParams.d == 0) {
-							prevValue = ParamState::volumeEnvelopeParams.s;
+						if (paramState->d == 0) {
+							prevValue = paramState->s;
 						}
 						else {
-							prevValue -= (1.0 - ParamState::volumeEnvelopeParams.s) /
-								ParamState::volumeEnvelopeParams.d * samplePeriod_s;
+							prevValue -= (1.0 - paramState->s) /
+								paramState->d * samplePeriod_s;
 						}
 					}
 				}
 				else if (state == State::NOTE_OFF) {
 					// Release
-					if (ParamState::volumeEnvelopeParams.r == 0) {
+					if (paramState->r == 0) {
 						prevValue = 0.0;
 					}
 					else {
@@ -40,7 +42,7 @@ namespace Steinberg {
 							releaseStarted = true;
 						}
 						prevValue -= releaseStartValue /
-							ParamState::volumeEnvelopeParams.r * samplePeriod_s;
+							paramState->r * samplePeriod_s;
 					}
 				}
 				return prevValue;

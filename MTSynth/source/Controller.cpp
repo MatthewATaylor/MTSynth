@@ -57,7 +57,7 @@ namespace Steinberg {
 					// Amp envelope
 					param = new RangeParameter(
 						USTRING("Volume A"), ParamState::VOLUME_A_ID,
-						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.05
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.01
 					);
 					param->setPrecision(2);
 					parameters.addParameter(param);
@@ -78,7 +78,7 @@ namespace Steinberg {
 
 					param = new RangeParameter(
 						USTRING("Volume R"), ParamState::VOLUME_R_ID,
-						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.05
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.01
 					);
 					param->setPrecision(2);
 					parameters.addParameter(param);
@@ -86,7 +86,7 @@ namespace Steinberg {
 					// Filter envelope
 					param = new RangeParameter(
 						USTRING("Filter A"), ParamState::FILTER_A_ID,
-						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.01
 					);
 					param->setPrecision(2);
 					parameters.addParameter(param);
@@ -107,7 +107,7 @@ namespace Steinberg {
 
 					param = new RangeParameter(
 						USTRING("Filter R"), ParamState::FILTER_R_ID,
-						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.01
 					);
 					param->setPrecision(2);
 					parameters.addParameter(param);

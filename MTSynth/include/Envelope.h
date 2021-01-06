@@ -3,12 +3,15 @@
 #include "pluginterfaces/vst/vsttypes.h"
 
 #include "ParamState.h"
+#include "EnvelopeParamState.h"
 
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
 			class Envelope {
 			private:
+				const EnvelopeParamState *paramState = nullptr;
+
 				double prevValue = 0.0;
 				
 				bool releaseStarted = false;
@@ -20,6 +23,7 @@ namespace Steinberg {
 					NOTE_OFF
 				};
 
+				Envelope(const EnvelopeParamState *paramState);
 				double calculate(int32 sampleOffset, SampleRate sampleRate, State state);
 				void reset();
 			};

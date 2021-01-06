@@ -36,8 +36,8 @@ namespace Steinberg {
 				double sinePhase = 0.0;
 				double prevFreq = -1.0;
 
-				Envelope volumeEnvelope;
-				Envelope filterEnvelope;
+				Envelope volumeEnvelope{ &ParamState::volumeEnvelopeParams };
+				Envelope filterEnvelope{ &ParamState::filterEnvelopeParams };
 
 			public:
 				static const uint8 NUM_CHANNELS = 2; // Left and right channels

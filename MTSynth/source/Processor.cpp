@@ -96,6 +96,30 @@ namespace Steinberg {
 								case ParamState::FILTER_CUTOFF_ID:
 									ParamState::filterCutoff = std::pow(2, value * 14.3);
 									break;
+								case ParamState::VOLUME_A_ID:
+									ParamState::volumeEnvelopeParams.a = value * EnvelopeParamState::MAX_TIME_S;
+									break;
+								case ParamState::VOLUME_D_ID:
+									ParamState::volumeEnvelopeParams.d = value * EnvelopeParamState::MAX_TIME_S;
+									break;
+								case ParamState::VOLUME_S_ID:
+									ParamState::volumeEnvelopeParams.s = value;
+									break;
+								case ParamState::VOLUME_R_ID:
+									ParamState::volumeEnvelopeParams.r = value * EnvelopeParamState::MAX_TIME_S;
+									break;
+								case ParamState::FILTER_A_ID:
+									ParamState::filterEnvelopeParams.a = value * EnvelopeParamState::MAX_TIME_S;
+									break;
+								case ParamState::FILTER_D_ID:
+									ParamState::filterEnvelopeParams.d = value * EnvelopeParamState::MAX_TIME_S;
+									break;
+								case ParamState::FILTER_S_ID:
+									ParamState::filterEnvelopeParams.s = value;
+									break;
+								case ParamState::FILTER_R_ID:
+									ParamState::filterEnvelopeParams.r = value * EnvelopeParamState::MAX_TIME_S;
+									break;
 								}
 							}
 						}

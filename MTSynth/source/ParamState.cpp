@@ -8,7 +8,9 @@ namespace Steinberg {
 			ParamValue ParamState::sineVolume = 1.0;
 			ParamValue ParamState::squareVolume = 0.0;
 			ParamState::FilterType ParamState::filterType = ParamState::FilterType::LOW_PASS;
-			ParamValue ParamState::filterCutoff = 20000;
+			ParamValue ParamState::filterCutoff = 20000.0;
+			EnvelopeParamState ParamState::volumeEnvelopeParams = { 0.05, 0.0, 1.0, 0.05 };
+			EnvelopeParamState ParamState::filterEnvelopeParams = { 0.0, 0.0, 1.0, 0.0 };
 
 			tresult ParamState::getState(IBStream *stream) {
 				IBStreamer streamer(stream, kLittleEndian);
@@ -32,6 +34,13 @@ namespace Steinberg {
 				}
 
 				if (!streamer.writeDouble(filterCutoff)) {
+					return kResultFalse;
+				}
+
+				if (volumeEnvelopeParams.getState(&streamer) == kResultFalse) {
+					return kResultFalse;
+				}
+				if (filterEnvelopeParams.getState(&streamer) == kResultFalse) {
 					return kResultFalse;
 				}
 
@@ -61,6 +70,13 @@ namespace Steinberg {
 				filterType = static_cast<FilterType>(filterTypeInt);
 
 				if (!streamer.readDouble(filterCutoff)) {
+					return kResultFalse;
+				}
+
+				if (volumeEnvelopeParams.setState(&streamer) == kResultFalse) {
+					return kResultFalse;
+				}
+				if (filterEnvelopeParams.setState(&streamer) == kResultFalse) {
 					return kResultFalse;
 				}
 				

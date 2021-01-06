@@ -9,6 +9,7 @@
 #include "ParamState.h"
 #include "FrequencyTable.h"
 #include "Filter.h"
+#include "Envelope.h"
 
 namespace Steinberg {
 	namespace Vst {
@@ -28,10 +29,15 @@ namespace Steinberg {
 				
 				int32 noteOnSampleOffset = 0;
 				int32 noteOffSampleOffset = 0;
+				bool noteTurnedOff = false;
 
 				Filter filter;
+
 				double sinePhase = 0.0;
 				double prevFreq = -1.0;
+
+				Envelope volumeEnvelope;
+				Envelope filterEnvelope;
 
 			public:
 				static const uint8 NUM_CHANNELS = 2; // Left and right channels

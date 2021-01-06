@@ -4,16 +4,20 @@ namespace Steinberg {
 	namespace Vst {
 		namespace mts {
 			inline void Voice::noteOn(int32 noteID, int32 pitch, float tuning, float velocity, int32 sampleOffset) {
+				// Reset to end release envelope
+				reset();
+				
 				this->noteID = noteID;
 				this->pitch = pitch;
 				this->tuning = tuning;
-				this->noteOnVelocity = velocity;
-				this->noteOnSampleOffset = sampleOffset;
+				noteOnVelocity = velocity;
+				noteOnSampleOffset = sampleOffset;
 			}
 
 			inline void Voice::noteOff(float velocity, int32 sampleOffset) {
-				this->noteOffVelocity = velocity;
-				this->noteOffSampleOffset = sampleOffset;
+				noteOffVelocity = velocity;
+				noteOffSampleOffset = sampleOffset;
+				noteTurnedOff = true;
 			}
 
 			template <typename SampleType>
@@ -36,9 +40,21 @@ namespace Steinberg {
 
 				for (int32 i = 0; i < numSamples; ++i) {
 					if (noteOnSampleOffset <= 0) {
-						if (noteOffSampleOffset == 0) {
+						double volumeEnvelopeValue;
+						if (noteOffSampleOffset <= 0 && noteTurnedOff) {
 							// Release
-							return false;
+							volumeEnvelopeValue = volumeEnvelope.calculate(
+								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF
+							);
+							if (volumeEnvelopeValue <= 0.000001) {
+								// Note is off
+								return false;
+							}
+						}
+						else {
+							volumeEnvelopeValue = volumeEnvelope.calculate(
+								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON
+							);
 						}
 
 						SampleType sineSample = static_cast<SampleType>(
@@ -46,6 +62,7 @@ namespace Steinberg {
 						);
 						SampleType squareSample = sineSample > 0 ? 1 : -1;
 						SampleType oscillatorOutput = sineSample * sineVolume + squareSample * squareVolume;
+						oscillatorOutput *= volumeEnvelopeValue;
 						
 						SampleType filterOutput;
 						switch (ParamState::filterType) {
@@ -78,15 +95,22 @@ namespace Steinberg {
 
 			inline void Voice::reset() {
 				sampleIndex = 0;
+				
 				noteID = -1;
 				pitch = -1;
 				tuning = 0.0f;
+				
 				noteOnSampleOffset = -1;
 				noteOffSampleOffset = -1;
+				noteTurnedOff = false;
 				
 				filter.reset();
+
 				sinePhase = 0.0;
 				prevFreq = -1.0;
+
+				volumeEnvelope.reset();
+				filterEnvelope.reset();
 			}
 
 			inline int32 Voice::getNoteID() const {

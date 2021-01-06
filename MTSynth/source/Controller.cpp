@@ -49,7 +49,65 @@ namespace Steinberg {
 
 					param = new RangeParameter(
 						USTRING("Filter Cutoff"), ParamState::FILTER_CUTOFF_ID,
-						USTRING(""), 0, 1, 1
+						USTRING("%"), 0, 100, 100
+					);
+					param->setPrecision(1);
+					parameters.addParameter(param);
+
+					// Amp envelope
+					param = new RangeParameter(
+						USTRING("Volume A"), ParamState::VOLUME_A_ID,
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.05
+					);
+					param->setPrecision(2);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Volume D"), ParamState::VOLUME_D_ID,
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0
+					);
+					param->setPrecision(2);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Volume S"), ParamState::VOLUME_S_ID,
+						USTRING("%"), 0, 100, 100
+					);
+					param->setPrecision(1);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Volume R"), ParamState::VOLUME_R_ID,
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0.05
+					);
+					param->setPrecision(2);
+					parameters.addParameter(param);
+
+					// Filter envelope
+					param = new RangeParameter(
+						USTRING("Filter A"), ParamState::FILTER_A_ID,
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0
+					);
+					param->setPrecision(2);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Filter D"), ParamState::FILTER_D_ID,
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0
+					);
+					param->setPrecision(2);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Filter S"), ParamState::FILTER_S_ID,
+						USTRING("%"), 0, 100, 100
+					);
+					param->setPrecision(1);
+					parameters.addParameter(param);
+
+					param = new RangeParameter(
+						USTRING("Filter R"), ParamState::FILTER_R_ID,
+						USTRING("s"), 0, EnvelopeParamState::MAX_TIME_S, 0
 					);
 					param->setPrecision(2);
 					parameters.addParameter(param);

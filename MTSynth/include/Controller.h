@@ -14,6 +14,7 @@
 #include "ParamState.h"
 #include "Voice.h"
 #include "VoiceProcessor.h"
+#include "EnvelopeParamState.h"
 
 namespace Steinberg {
 	namespace Vst {

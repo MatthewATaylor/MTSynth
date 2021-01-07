@@ -3,15 +3,6 @@
 namespace Steinberg {
 	namespace Vst {
 		namespace mts {
-			ParamValue ParamState::masterVolume = 0.5;
-			ParamValue ParamState::tuning = 0.0;
-			ParamValue ParamState::sineVolume = 1.0;
-			ParamValue ParamState::squareVolume = 0.0;
-			ParamState::FilterType ParamState::filterType = ParamState::FilterType::LOW_PASS;
-			ParamValue ParamState::filterCutoff = 20000.0;
-			EnvelopeParamState ParamState::volumeEnvelopeParams = { 0.01, 0.0, 1.0, 0.01 };
-			EnvelopeParamState ParamState::filterEnvelopeParams = { 0.01, 0.0, 1.0, 0.01 };
-
 			tresult ParamState::getState(IBStream *stream) {
 				IBStreamer streamer(stream, kLittleEndian);
 

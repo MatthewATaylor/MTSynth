@@ -36,8 +36,8 @@ namespace Steinberg {
 				double sinePhase = 0.0;
 				double prevFreq = -1.0;
 
-				Envelope volumeEnvelope{ &ParamState::volumeEnvelopeParams };
-				Envelope filterEnvelope{ &ParamState::filterEnvelopeParams };
+				Envelope volumeEnvelope;
+				Envelope filterEnvelope;
 
 			public:
 				static const uint8 NUM_CHANNELS = 2; // Left and right channels
@@ -46,7 +46,10 @@ namespace Steinberg {
 				inline void noteOff(float velocity, int32 sampleOffset);
 				
 				template <typename SampleType>
-				inline bool process(SampleType **outputBuffers, int32 numSamples, SampleRate sampleRate);
+				inline bool process(
+					SampleType **outputBuffers, int32 numSamples, SampleRate sampleRate,
+					const ParamState &paramState
+				);
 				
 				inline void reset();
 				inline int32 getNoteID() const;

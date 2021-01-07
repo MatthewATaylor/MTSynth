@@ -21,12 +21,15 @@ namespace Steinberg {
 			}
 
 			template <typename SampleType>
-			inline bool Voice::process(SampleType **outputBuffers, int32 numSamples, SampleRate sampleRate) {
-				ParamValue sineVolume = ParamState::masterVolume * ParamState::sineVolume;
-				ParamValue squareVolume = ParamState::masterVolume * ParamState::squareVolume;
-				double rc = 1.0 / (2 * PI * ParamState::filterCutoff);
+			inline bool Voice::process(
+				SampleType **outputBuffers, int32 numSamples, SampleRate sampleRate,
+				const ParamState &paramState
+			) {
+				ParamValue sineVolume = paramState.masterVolume * paramState.sineVolume;
+				ParamValue squareVolume = paramState.masterVolume * paramState.squareVolume;
+				double rc = 1.0 / (2 * PI * paramState.filterCutoff);
 
-				double freq = FrequencyTable::get()[pitch] * std::pow(2, ParamState::tuning / 1200);
+				double freq = FrequencyTable::get()[pitch] * std::pow(2, paramState.tuning / 1200);
 				double adjustedFreq = freq * 2 * PI / sampleRate; // Used to calculate sample values
 
 				// Adjust phase to prevent pitch bend crackle
@@ -45,10 +48,12 @@ namespace Steinberg {
 						if (noteOffSampleOffset <= 0 && noteTurnedOff) {
 							// Release
 							volumeEnvelopeValue = volumeEnvelope.calculate(
-								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF
+								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF,
+								paramState.volumeEnvelopeParams
 							);
 							filterEnvelopeValue = filterEnvelope.calculate(
-								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF
+								-noteOffSampleOffset, sampleRate, Envelope::State::NOTE_OFF,
+								paramState.filterEnvelopeParams
 							);
 							if (volumeEnvelopeValue <= 0.000001) {
 								// Note is off
@@ -57,10 +62,12 @@ namespace Steinberg {
 						}
 						else {
 							volumeEnvelopeValue = volumeEnvelope.calculate(
-								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON
+								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON,
+								paramState.volumeEnvelopeParams
 							);
 							filterEnvelopeValue = filterEnvelope.calculate(
-								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON
+								-noteOnSampleOffset, sampleRate, Envelope::State::NOTE_ON,
+								paramState.filterEnvelopeParams
 							);
 						}
 
@@ -73,7 +80,7 @@ namespace Steinberg {
 						
 						// TODO: Apply filter envelope
 						SampleType filterOutput;
-						switch (ParamState::filterType) {
+						switch (paramState.filterType) {
 						case ParamState::FilterType::LOW_PASS:
 							filterOutput = static_cast<SampleType>(
 								filter.getLowPass(oscillatorOutput, rc, sampleRate)

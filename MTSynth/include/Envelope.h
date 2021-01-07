@@ -10,8 +10,6 @@ namespace Steinberg {
 		namespace mts {
 			class Envelope {
 			private:
-				const EnvelopeParamState *paramState = nullptr;
-
 				double prevValue = 0.0;
 				
 				bool releaseStarted = false;
@@ -23,8 +21,10 @@ namespace Steinberg {
 					NOTE_OFF
 				};
 
-				Envelope(const EnvelopeParamState *paramState);
-				double calculate(int32 sampleOffset, SampleRate sampleRate, State state);
+				double calculate(
+					int32 sampleOffset, SampleRate sampleRate, State state,
+					const EnvelopeParamState &paramState
+				);
 				void reset();
 			};
 		}

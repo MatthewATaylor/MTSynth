@@ -14,6 +14,7 @@ namespace Steinberg {
 		namespace mts {
 			class Processor : public AudioEffect {
 			private:
+				ParamState paramState;
 				VoiceProcessor voiceProcessor;
 
 			public:

@@ -32,17 +32,17 @@ namespace Steinberg {
 					HIGH_PASS
 				};
 
-				static ParamValue masterVolume;
-				static ParamValue tuning;
-				static ParamValue sineVolume;
-				static ParamValue squareVolume;
-				static FilterType filterType;
-				static ParamValue filterCutoff;
-				static EnvelopeParamState volumeEnvelopeParams;
-				static EnvelopeParamState filterEnvelopeParams;
+				ParamValue masterVolume = 0.5;
+				ParamValue tuning = 0.0;
+				ParamValue sineVolume = 1.0;
+				ParamValue squareVolume = 0.0;
+				FilterType filterType = FilterType::LOW_PASS;
+				ParamValue filterCutoff = 20000.0;
+				EnvelopeParamState volumeEnvelopeParams = { 0.01, 0.0, 1.0, 0.01 };
+				EnvelopeParamState filterEnvelopeParams = { 0.01, 0.0, 1.0, 0.01 };
 
-				static tresult getState(IBStream *stream);
-				static tresult setState(IBStream *stream);
+				tresult getState(IBStream *stream);
+				tresult setState(IBStream *stream);
 			};
 		}
 	}

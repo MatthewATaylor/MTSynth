@@ -9,6 +9,7 @@
 #include "pluginterfaces/vst/ivstevents.h"
 
 #include "Voice.h"
+#include "ParamState.h"
 
 namespace Steinberg {
 	namespace Vst {
@@ -31,7 +32,7 @@ namespace Steinberg {
 				Voice voices[MAX_VOICES];
 
 				template <typename SampleType>
-				inline tresult process(ProcessData &data, SampleRate sampleRate);
+				inline tresult process(ProcessData &data, SampleRate sampleRate, const ParamState &paramState);
 				
 				inline int32 getNumActiveVoices() const;
 			};

@@ -38,11 +38,11 @@ namespace Steinberg {
 			}
 
 			tresult PLUGIN_API Processor::getState(IBStream *state) {
-				return ParamState::getState(state);
+				return paramState.getState(state);
 			}
 
 			tresult PLUGIN_API Processor::setState(IBStream *state) {
-				return ParamState::setState(state);
+				return paramState.setState(state);
 			}
 
 			tresult PLUGIN_API Processor::canProcessSampleSize(int32 symbolicSampleSize) {
@@ -77,48 +77,48 @@ namespace Steinberg {
 							if (queue->getPoint(queue->getPointCount() - 1, sampleOffset, value) == kResultTrue) {
 								switch (queue->getParameterId()) {
 								case ParamState::MASTER_VOLUME_ID:
-									ParamState::masterVolume = value;
+									paramState.masterVolume = value;
 									break;
 								case ParamState::TUNING_ID:
-									ParamState::tuning = value * 400 - 200;
+									paramState.tuning = value * 400 - 200;
 									break;
 								case ParamState::SINE_VOLUME_ID:
-									ParamState::sineVolume = value;
+									paramState.sineVolume = value;
 									break;
 								case ParamState::SQUARE_VOLUME_ID:
-									ParamState::squareVolume = value;
+									paramState.squareVolume = value;
 									break;
 								case ParamState::FILTER_TYPE_ID:
-									ParamState::filterType = static_cast<ParamState::FilterType>(
+									paramState.filterType = static_cast<ParamState::FilterType>(
 										static_cast<int8>(std::round(value))
 									);
 									break;
 								case ParamState::FILTER_CUTOFF_ID:
-									ParamState::filterCutoff = std::pow(2, value * 14.3);
+									paramState.filterCutoff = std::pow(2, value * 14.3);
 									break;
 								case ParamState::VOLUME_A_ID:
-									ParamState::volumeEnvelopeParams.a = value * EnvelopeParamState::MAX_TIME_S;
+									paramState.volumeEnvelopeParams.a = value * EnvelopeParamState::MAX_TIME_S;
 									break;
 								case ParamState::VOLUME_D_ID:
-									ParamState::volumeEnvelopeParams.d = value * EnvelopeParamState::MAX_TIME_S;
+									paramState.volumeEnvelopeParams.d = value * EnvelopeParamState::MAX_TIME_S;
 									break;
 								case ParamState::VOLUME_S_ID:
-									ParamState::volumeEnvelopeParams.s = value;
+									paramState.volumeEnvelopeParams.s = value;
 									break;
 								case ParamState::VOLUME_R_ID:
-									ParamState::volumeEnvelopeParams.r = value * EnvelopeParamState::MAX_TIME_S;
+									paramState.volumeEnvelopeParams.r = value * EnvelopeParamState::MAX_TIME_S;
 									break;
 								case ParamState::FILTER_A_ID:
-									ParamState::filterEnvelopeParams.a = value * EnvelopeParamState::MAX_TIME_S;
+									paramState.filterEnvelopeParams.a = value * EnvelopeParamState::MAX_TIME_S;
 									break;
 								case ParamState::FILTER_D_ID:
-									ParamState::filterEnvelopeParams.d = value * EnvelopeParamState::MAX_TIME_S;
+									paramState.filterEnvelopeParams.d = value * EnvelopeParamState::MAX_TIME_S;
 									break;
 								case ParamState::FILTER_S_ID:
-									ParamState::filterEnvelopeParams.s = value;
+									paramState.filterEnvelopeParams.s = value;
 									break;
 								case ParamState::FILTER_R_ID:
-									ParamState::filterEnvelopeParams.r = value * EnvelopeParamState::MAX_TIME_S;
+									paramState.filterEnvelopeParams.r = value * EnvelopeParamState::MAX_TIME_S;
 									break;
 								}
 							}
@@ -133,10 +133,10 @@ namespace Steinberg {
 				}
 				else {
 					if (processSetup.symbolicSampleSize == kSample32) {
-						result = voiceProcessor.process<Sample32>(data, processSetup.sampleRate);
+						result = voiceProcessor.process<Sample32>(data, processSetup.sampleRate, paramState);
 					}
 					else if (processSetup.symbolicSampleSize == kSample64) {
-						result = voiceProcessor.process<Sample64>(data, processSetup.sampleRate);
+						result = voiceProcessor.process<Sample64>(data, processSetup.sampleRate, paramState);
 					}
 					else {
 						return kInvalidArgument;

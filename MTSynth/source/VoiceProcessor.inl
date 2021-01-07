@@ -30,7 +30,7 @@ namespace Steinberg {
 			}
 
 			template <typename SampleType>
-			inline tresult VoiceProcessor::process(ProcessData &data, SampleRate sampleRate) {
+			inline tresult VoiceProcessor::process(ProcessData &data, SampleRate sampleRate, const ParamState &paramState) {
 				int32 numSamples = data.numSamples;
 				int32 samplesProcessed = 0;
 
@@ -108,7 +108,7 @@ namespace Steinberg {
 					// Process chunk
 					for (uint8 i = 0; i < MAX_VOICES; ++i) {
 						if (voices[i].getNoteID() != -1) {
-							if (!voices[i].process(buffers, samplesToProcess, sampleRate)) {
+							if (!voices[i].process(buffers, samplesToProcess, sampleRate, paramState)) {
 								// Voice is now inactive
 								voices[i].reset();
 								--numActiveVoices;
